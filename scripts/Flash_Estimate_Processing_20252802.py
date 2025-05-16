@@ -2,12 +2,14 @@
 
 import pandas as pd
 import plotly_express as px
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 # import sys
 # sys.path.append("../") # So I can import functions from the streamlit script, makes the bargraphs black and white though?
 # from Streamlit_application import quarter_to_numeric, numeric_to_quarter
 
-# TPI_colours = ["#eb5e5e", "#03979d", "#9c4f8b"] # peachy colour, greeny blue, lighter purple
-TPI_colours = ["#6C2283", "#39A7DF"] # dark purple, blue
+TPI_colours = ["#eb5e5e", "#03979d", "#9c4f8b"] # peachy colour, greeny blue, lighter purple
+# TPI_colours = ["#6C2283", "#39A7DF"] # dark purple, blue
 
 def rebase_chain_linked_quarters(df, new_base_year):
     df = df.copy()
@@ -59,23 +61,90 @@ def line_graph(data, year, title, yAxisTitle, legendTitle):
         color_discrete_sequence=TPI_colours)
         return fig
 
-def qoq(data):
+def qoq(data, title, legendTitle):
         # data = data[['Quarter', 'OPH']]
-        data["quarter_numeric"] = data["Quarter"].apply(quarter_to_numeric)
+        # data["quarter_numeric"] = data["Quarter"].apply(quarter_to_numeric)
         # data = data[(data["quarter_numeric"] >= 2022 - 0.25) & (data["quarter_numeric"] <= 2024.75)]
-        data = data.drop('quarter_numeric', axis=1)
-        data = data.melt(id_vars = "Quarter", var_name = "Measure")
-        data["QoQ Growth (%)"] = data.groupby("Measure")["value"].pct_change().mul(100).round(2)
+        # data = data.drop('quarter_numeric', axis=1)
+        data = data.melt(id_vars = "Quarter", var_name = f"{legendTitle}")
+        data["QoQ Growth (%)"] = data.groupby(f"{legendTitle}")["value"].pct_change().mul(100).round(2)
 
         data = data.dropna()
         fig = px.bar(data, 
                      x="Quarter", 
                      y="QoQ Growth (%)", 
-                     color="Measure",
+                     color=f"{legendTitle}",
                      color_discrete_sequence=TPI_colours,
                      barmode="group", 
-                     title="Q1 2022 - Q4 2024 QoQ Growth")
-        fig.update_layout(showlegend=False)
+                     title=f"{title}")
+        # fig.update_layout(showlegend=False)
+        fig.update_xaxes(title=None)
+        return fig
+
+def double_qoq(data, data_two, title, legendTitle):
+        # data = data[['Quarter', 'OPH']]
+        # data["quarter_numeric"] = data["Quarter"].apply(quarter_to_numeric)
+        # data = data[(data["quarter_numeric"] >= 2022 - 0.25) & (data["quarter_numeric"] <= 2024.75)]
+        # data = data.drop('quarter_numeric', axis=1)
+        data = data.melt(id_vars = "Quarter", var_name = f"{legendTitle}")
+        data["QoQ Growth (%)"] = data.groupby(f"{legendTitle}")["value"].pct_change().mul(100).round(2)
+        data = data.dropna()
+
+        data_two = data_two.melt(id_vars = "Quarter", var_name = f"{legendTitle}")
+        data_two["QoQ Growth (%)"] = data_two.groupby(f"{legendTitle}")["value"].pct_change().mul(100).round(2)
+        data_two = data_two.dropna()
+
+        # Create subplots with 1 row and 2 columns
+        fig = make_subplots(
+            rows=1, cols=2, 
+            subplot_titles=["Output per hour", f"Output per worker"]
+        )
+
+        # Add the first bar chart to the first subplot
+        fig1 = px.bar(data, 
+                     x="Quarter", 
+                     y="QoQ Growth (%)", 
+                     color=f"{legendTitle}",
+                     color_discrete_sequence=TPI_colours,
+                     barmode="group", 
+                     title=f"{title}")
+
+        # Add the second bar chart to the second subplot
+        fig2 = px.bar(data_two, 
+                     x="Quarter", 
+                     y="QoQ Growth (%)", 
+                     color=f"{legendTitle}",
+                     color_discrete_sequence=TPI_colours,
+                     barmode="group", 
+                     title=f"{title}")
+        
+        for trace in fig1.data:
+            fig.add_trace(trace, row=1, col=1)
+        legend_labels = set(trace.name for trace in fig1.data)
+        for trace in fig2.data:
+            if trace.name in legend_labels:
+                trace.showlegend = False  # Hide from legend
+            else:
+                legend_labels.add(trace.name)
+            fig.add_trace(trace, row=1, col=2)
+
+        # Update layout for the subplots
+        fig.update_layout(
+            title=title,
+            # xaxis_title="Quarter",
+            yaxis_title="QoQ Growth (%)",
+            legend_title="Method",
+            barmode="group",  # Group bars within each subplot
+        )
+
+        # Update x-axis titles for each subplot
+        fig.update_xaxes(title_text="", row=1, col=1)
+        fig.update_xaxes(title_text="", row=1, col=2)
+
+        # Update y-axis titles for each subplot
+        fig.update_yaxes(title_text="QoQ Growth (%)", row=1, col=1)
+        fig.update_yaxes(title_text="QoQ Growth (%)", row=1, col=2)
+
         return fig
 
 def yoy(data):
@@ -94,7 +163,44 @@ def yoy(data):
         fig = px.bar(data, x="Quarter", y="YoY Growth (%)", color="Measure",
                 barmode="group", title="Q4 YOY Growth")
         fig.update_layout(showlegend=False)
+        fig.update_xaxes(showtitle=False)
         return fig
+
+def horizontal_bar(data, title):
+    data = data.dropna()
+    data.drop(data.index[0], inplace=True)
+    data = data.sort_values(by='Contribution')
+    fig = go.Figure()
+
+    fig.add_trace(go.Bar(
+        y=data['Industry'],
+        x=data['Contribution'],
+        orientation='h',
+        marker=dict(
+            color=data['Contribution'],
+            colorscale='RdYlGn',
+            line=dict(color='black', width=0.5)
+        ),
+        width=[w / max(data['Size']) * 0.9 for w in data['Size']],  # Normalize bar thickness
+    ))
+
+    # Clean layout
+    fig.update_layout(
+        title=f'{title}',
+        xaxis_title='Percentage point change',
+        yaxis_title='',
+        bargap=0.15,
+        template='simple_white',
+        height=400 + len(data) * 20,
+        xaxis=dict(
+            tickformat=".1%",
+            zeroline=True,
+            zerolinewidth=2,
+            zerolinecolor='gray'
+        ),
+    )
+    return fig
+
 
 # Flash_Estimate = pd.read_csv('../src/New-release/OPH Q1 2025.csv', skiprows=7, usecols=[0,1,2,3], names=["Quarter", "GVA", "Hours Worked", "OPH"])
 # # Change from Q4 1997 to 1997 Q4
@@ -137,20 +243,38 @@ def yoy(data):
 # OPH_Comparison = rebase_chain_linked_quarters(OPH_Comparison, 2020)
 # # fig = qoq(Flash_Estimate)
 # # fig = yoy(Flash_Estimate)
-OPH_Comparison = pd.read_csv('../src/New-release/OPH LFS vs RTI.csv', skiprows=7, usecols=[0,1,2], names=["Quarter", "LFS Output per hour worked", "RTI + SE (exc working proprietors) Output per hour worked"])
-OPH_Comparison["Quarter"] = OPH_Comparison["Quarter"].str.replace(r"(Q\d) (\d{4})", r"\2 \1", regex=True)
-print(OPH_Comparison)
-# fig = line_graph(OPH_Comparison, 2022, "OPH using LFS vs RTI", "Output per hour worked", "OPH ...")
-# fig.update_layout(template="plotly_white")
+# OPH_Comparison = pd.read_csv('../src/New-release/OPH LFS vs RTI.csv', skiprows=7, usecols=[0,1,2], names=["Quarter", "LFS Output per hour worked", "RTI + SE (exc working proprietors) Output per hour worked"])
+# OPH_Comparison["Quarter"] = OPH_Comparison["Quarter"].str.replace(r"(Q\d) (\d{4})", r"\2 \1", regex=True)
+# OPH_Comparison['Quarter'] = OPH_Comparison['Quarter'].apply(quarter_to_numeric)
+# OPH_Comparison = OPH_Comparison[(OPH_Comparison['Quarter'] >= 2014.75) & (OPH_Comparison['Quarter'] <= 2025)]
+# OPH_Comparison['Quarter'] = OPH_Comparison['Quarter'].apply(numeric_to_quarter)
+# # fig = line_graph(OPH_Comparison, 2022, "OPH using LFS vs RTI", "Output per hour worked", "OPH ...")
+# # fig.update_layout(template="plotly_white")
+# # fig.show()
+
+# OPW_Comparison = pd.read_csv('../src/New-release/OPW LFS vs RTI.csv', skiprows=7, usecols=[0,1,2], names=["Quarter", "LFS Output per hour worked", "RTI + SE (exc working proprietors) Output per hour worked"])
+# OPW_Comparison["Quarter"] = OPW_Comparison["Quarter"].str.replace(r"(Q\d) (\d{4})", r"\2 \1", regex=True)
+# OPW_Comparison['Quarter'] = OPW_Comparison['Quarter'].apply(quarter_to_numeric)
+# OPW_Comparison = OPW_Comparison[(OPW_Comparison['Quarter'] >= 2014.75) & (OPW_Comparison['Quarter'] <= 2025)]
+# OPW_Comparison['Quarter'] = OPW_Comparison['Quarter'].apply(numeric_to_quarter)
+# # fig = line_graph(OPW_Comparison, 2022, "OPW using LFS vs RTI", "Output per worker", "OPW ...")
+# # fig.update_layout(template="plotly_white")
+# # fig.show()
+
+# # fig = qoq(OPH_Comparison, "OPH calculated using LFS vs RTI + SE QoQ growth (%)", "OPH Method")
+# # fig.show()
+# # fig.write_image("../out/visualisations/OPH - LFS vs RTI.png", width=1200, height=800, scale=2)
+# # fig = qoq(OPW_Comparison, "OPW calculated using LFS vs RTI + SE QoQ growth (%)", "OPW Method")
+# # fig.show()
+# # fig.write_image("../out/visualisations/OPW LFS vs RTI.png", width=1200, height=800, scale=2)
+# fig = double_qoq(OPH_Comparison, OPW_Comparison, "OPH and OPW calculated using LFS vs RTI + SE QoQ growth (%)", "Method")
+# fig.write_image("../out/visualisations/OPH and OPW LFS vs RTI.png", width=1200, height=800, scale=2)
 # fig.show()
 
-OPW_Comparison = pd.read_csv('../src/New-release/OPW LFS vs RTI.csv', skiprows=7, usecols=[0,1,2], names=["Quarter", "LFS Output per hour worked", "RTI + SE (exc working proprietors) Output per hour worked"])
-OPW_Comparison["Quarter"] = OPW_Comparison["Quarter"].str.replace(r"(Q\d) (\d{4})", r"\2 \1", regex=True)
-# fig = line_graph(OPW_Comparison, 2022, "OPW using LFS vs RTI", "Output per worker", "OPW ...")
-# fig.update_layout(template="plotly_white")
+# OPH_Industries = pd.read_excel('../src/New-release/Contribution To OPH.xlsx', skiprows=11, usecols=[0,1, 2], names=["Industry", "Contribution", "Size"])
+# fig = horizontal_bar(OPH_Industries, "Contribution to OPH by Industry - width of bar represents relative size of industry")
+# fig.write_image("../out/visualisations/Contribution to OPH by Industry.png", width=1200, height=800, scale=2)
 # fig.show()
 
-fig = qoq(OPH_Comparison)
-fig.show()
-fig = qoq(OPW_Comparison)
-fig.show()
+OPH_Breakdown = pd.read_excel('../src/New-release/GVA OPH HW.xlsx', skiprows=6, usecols=[0,1,2,3])
+print(OPH_Breakdown)
