@@ -10,12 +10,14 @@ from plotly.subplots import make_subplots
 
 TPI_colours = ["#eb5e5e", "#03979d", "#9c4f8b"] # peachy colour, greeny blue, lighter purple
 # TPI_colours = ["#6C2283", "#39A7DF"] # dark purple, blue
+TPI_One = "#03979d"
+TPI_Two = "#eb5e5e"
 
-def rebase_chain_linked_quarters(df, new_base_year):
-    df = df.copy()
+def rebase_chain_linked_quarters(data, new_base_year):
+    data = data.copy()
     
     # Extract year from Quarter (e.g., 1997.25 -> 1997)
-    df["Year"] = df["Quarter"].astype(int)
+    data["Year"] = data["Quarter"].astype(int)
 
     def rebase_group(group):
         # Get the mean of the base year for this group
@@ -27,12 +29,12 @@ def rebase_chain_linked_quarters(df, new_base_year):
         return group
 
     # Apply rebase per group
-    df = df.groupby(["Country", "Industry", "Variable"], group_keys=False).apply(rebase_group)
+    data = data.groupby(["Country", "Industry", "Variable"], group_keys=False).apply(rebase_group)
 
     # Drop temporary year column
-    df = df.drop(columns="Year")
+    data = data.drop(columns="Year")
 
-    return df
+    return data
 
 def quarter_to_numeric(q):
     year, qtr = q.split(" ")
@@ -56,9 +58,14 @@ def line_graph(data, year, title, yAxisTitle, legendTitle):
         data, 
         x="Quarter", 
         y=data.columns.drop("Quarter").tolist(), 
-        title=f"{title} ({year} = 100)",
+        title=f"{title} (Q1 {year} = 100)",
         labels={"value": f"{yAxisTitle}", "variable": f"{legendTitle}"},
         color_discrete_sequence=TPI_colours)
+
+        tickvals = [q for q in data['Quarter'] if q.endswith("Q1")]
+
+        fig.update_xaxes(tickvals=tickvals)
+
         return fig
 
 def qoq(data, title, legendTitle):
@@ -178,10 +185,13 @@ def horizontal_bar(data, title):
         orientation='h',
         marker=dict(
             color=data['Contribution'],
-            colorscale='RdYlGn',
+            colorscale=[
+                [0, TPI_Two],  
+                [1, TPI_One]
+            ],
             line=dict(color='black', width=0.5)
-        ),
-        width=[w / max(data['Size']) * 0.9 for w in data['Size']],  # Normalize bar thickness
+        ), 
+        width=[w / max(data['Size']) * 0.9 for w in data['Size']],  # Normalise bar thickness
     ))
 
     # Clean layout
@@ -201,6 +211,95 @@ def horizontal_bar(data, title):
     )
     return fig
 
+def OPH(data, title):
+    data['Output per hour worked'] *= 100
+    data['GVA'] *= 100
+    data['Hours worked'] *= 100
+    # data.drop(data.index[0], inplace=True)
+     # Create subplots with shared y-axis
+    fig = make_subplots(
+        rows=1, cols=2,
+        shared_yaxes=True,
+        horizontal_spacing=0.05,
+        subplot_titles=(
+            "Change in <b>output per hour worked</b>",
+            "Change in <b>GVA</b> and <b>hours worked</b>"
+        )
+    )
+
+    # Left chart: Productivity
+    fig.add_trace(
+        go.Bar(
+            x=data['Output per hour worked'],
+            y=data['Industry'],
+            orientation='h',
+            name='Productivity',
+            marker_color=TPI_colours[0],
+            text=data['Output per hour worked'].map(lambda x: f"{x:.1f}%"),
+            textposition='auto'
+        ),
+        row=1, col=1
+    )
+
+    # Right chart: GVA and Hours Worked
+    fig.add_trace(
+        go.Bar(
+            x=data['GVA'],
+            y=data['Industry'],
+            orientation='h',
+            name='GVA',
+            marker_color=TPI_colours[1]
+        ),
+        row=1, col=2
+    )
+
+    fig.add_trace(
+        go.Bar(
+            x=data['Hours worked'],
+            y=data['Industry'],
+            orientation='h',
+            name='Hours Worked',
+            marker_color=TPI_colours[2]
+        ),
+        row=1, col=2
+    )
+
+    # Update layout
+    fig.update_layout(
+        height=1000,
+        barmode='group',
+        title_text=f'{title}',
+        showlegend=True,
+        legend=dict(x=0.65, y=1.1, orientation='h'),
+        margin=dict(l=120, r=20, t=60, b=20),
+    )
+
+    # Center x-axes at zero
+    fig.update_xaxes(title_text="", range=[-35, 35], row=1, col=1, zeroline=True)
+    fig.update_xaxes(title_text="", range=[-35, 35], row=1, col=2, zeroline=True)
+
+    # Reverse y-axis for top-to-bottom sorting (optional)
+    fig.update_yaxes(autorange='reversed')
+    return fig
+
+def New_GDP(data):
+    custom_colours = [TPI_One if g >= 0 else TPI_Two for g in data['Growth']]
+    fig = go.Figure(go.Bar(
+        x=data['Growth'],
+        y=data['Country'],
+        orientation='h',
+        marker_color=custom_colours,
+        text=data['Note'],
+        hovertemplate='%{y}: %{x}%<br>%{text}<extra></extra>'
+    ))
+
+    fig.update_layout(
+        title="Q1 2025 GDP Growth by Country",
+        xaxis_title="Growth Rate (%)",
+        yaxis_title="",
+        template="plotly_white"
+    )
+    return fig
 
 # Flash_Estimate = pd.read_csv('../src/New-release/OPH Q1 2025.csv', skiprows=7, usecols=[0,1,2,3], names=["Quarter", "GVA", "Hours Worked", "OPH"])
 # # Change from Q4 1997 to 1997 Q4
@@ -214,15 +313,17 @@ def horizontal_bar(data, title):
 
 # fig.show()
 
-# Flash_Estimate_OPH = pd.read_csv('../src/New-release/OPH Q1 2025.csv', skiprows=7, usecols=[0,1,2,3], names=["Quarter", "Gross Value Added", "Hours Worked", "Output Per Hour"])
-# Flash_Estimate_OPH["Quarter"] = Flash_Estimate_OPH["Quarter"].str.replace(r"(Q\d) (\d{4})", r"\2 \1", regex=True)
+Flash_Estimate_OPH = pd.read_csv('../src/New-release/OPH Q1 2025.csv', skiprows=7, usecols=[0,1,2,3], names=["Quarter", "Gross Value Added", "Hours Worked", "Output Per Hour"])
+Flash_Estimate_OPH["Quarter"] = Flash_Estimate_OPH["Quarter"].str.replace(r"(Q\d) (\d{4})", r"\2 \1", regex=True)
 # Flash_Estimate_OPH["Quarter"] = Flash_Estimate_OPH["Quarter"].apply(quarter_to_numeric)
 # Flash_Estimate_OPH = pd.melt(Flash_Estimate_OPH, id_vars=['Quarter'], var_name='Variable', value_name='Value')
 # Flash_Estimate_OPH['Country'] = 'UK Flash Estimate'
 # Flash_Estimate_OPH['Industry'] = 'Total'
 # # Flash_Estimate_OPH['Variable'] = 'Flash Estimate Output per Hour'
 # Flash_Estimate_OPH = rebase_chain_linked_quarters(Flash_Estimate_OPH, 2020)
-# print(Flash_Estimate_OPH)
+fig = line_graph(Flash_Estimate_OPH, 1997, "Output per hour worked vs Hours worked vs Gross Value Added for Q1 2025 Flash Estimate data", "", "")
+fig.show()
+fig.write_image("../out/visualisations/Q1 2025 Flash Estimate.png", width=1200, height=800, scale=2)
 
 # Dataset = pd.read_csv('../out/Long_Dataset.csv')
 # Dataset = pd.concat([Dataset, Flash_Estimate_OPH])
@@ -276,5 +377,20 @@ def horizontal_bar(data, title):
 # fig.write_image("../out/visualisations/Contribution to OPH by Industry.png", width=1200, height=800, scale=2)
 # fig.show()
 
-OPH_Breakdown = pd.read_excel('../src/New-release/GVA OPH HW.xlsx', skiprows=6, usecols=[0,1,2,3])
-print(OPH_Breakdown)
+# OPH_Breakdown = pd.read_excel('../src/New-release/GVA OPH HW.xlsx', skiprows=6, usecols=[0,1,2,3])
+# fig = OPH(OPH_Breakdown, "Industry Breakdown: Output per hour worked, GVA, and Hours Worked")
+# fig.write_image("../out/visualisations/OPH GVA HW.png", width=1200, height=800, scale=2)
+# fig.show()
+
+# GDPdata = {
+#     "Country": ["UK", "Canada", "Italy", "Germany", "France", "Japan", "US"],
+#     "Growth": [0.7, 0.4, 0.3, 0.2, 0.1, -0.2, -0.3],
+#     "Note": ["0.7%", "0.4%*", "0.3%", "0.2%", "0.1%", "-0.2%", "-0.3%"],
+#     "Colour": ["green", "green", "green", "green", "green", "red", "red"]
+# }
+
+# GDPdata = pd.DataFrame(GDPdata)
+# GDPdata = GDPdata.sort_values(by="Growth", ascending=True)
+# fig = New_GDP(GDPdata)
+# fig.write_image("../out/visualisations/Q1 GDP.png", width=1200, height=800, scale=2)
+# fig.show()
