@@ -311,6 +311,7 @@ def update_selection(option):
         st.session_state.selected = option
 
 def multiY_plot(data, quarter, country_selection, base_year):
+    TPI_colours = ["#eb5e5e", "#03979d", "#9c4f8b"]
     st.sidebar.divider()
     st.sidebar.subheader("Configure layout")
     show_years = st.sidebar.toggle(label="Show years instead of quarters", value=False)
@@ -322,14 +323,18 @@ def multiY_plot(data, quarter, country_selection, base_year):
     OPH = data.query(
             f"Quarter >= {quarter[0]} and Quarter <= {quarter[1]} and Country == '{country_selection}' and Variable == 'Output Per Hour'").copy()
 
-    OPW = data.query(
-            f"Quarter >= {quarter[0]} and Quarter <= {quarter[1]} and Country == '{country_selection}' and Variable == 'Output Per Worker'").copy()
+    # OPW = data.query(
+    #         f"Quarter >= {quarter[0]} and Quarter <= {quarter[1]} and Country == '{country_selection}' and Variable == 'Output Per Worker'").copy()
 
+    HW = data.query(
+        f"Quarter >= {quarter[0]} and Quarter <= {quarter[1]} and Country == '{country_selection}' and Variable == 'Hours Worked'").copy()
+
+    print(HW)
     GVA = data.query(
             f"Quarter >= {quarter[0]} and Quarter <= {quarter[1]} and Country == '{country_selection}' and Variable == 'Gross Value Added' and Industry == 'Total'").copy()
     if not show_years:
         OPH['Quarter'] = OPH['Quarter'].apply(numeric_to_quarter)
-        OPW['Quarter'] = OPW['Quarter'].apply(numeric_to_quarter)
+        HW['Quarter'] = HW['Quarter'].apply(numeric_to_quarter)
         GVA['Quarter'] = GVA['Quarter'].apply(numeric_to_quarter)
 
     quarters = OPH['Quarter']
@@ -338,28 +343,28 @@ def multiY_plot(data, quarter, country_selection, base_year):
 
     # Profit trace (left y-axis, green)
     fig.add_trace(go.Scatter(
-        x=quarters, y=OPH['Value'], name="OPH",
-        yaxis="y", mode="lines+markers",
-        line=dict(color="green")
+        x=quarters, y=OPH['Value'], name="Outut Per Hour",
+        yaxis="y", mode="lines",
+        line=dict(color=TPI_colours[0])
     ))
 
     # Orders trace (left overlay, orange)
     fig.add_trace(go.Scatter(
-        x=quarters, y=OPW['Value'], name="OPW",
-        yaxis="y2", mode="lines+markers",
-        line=dict(color="orange")
+        x=quarters, y=HW['Value'], name="Hours Worked",
+        yaxis="y2", mode="lines",
+        line=dict(color=TPI_colours[1])
     ))
 
     # Sales trace (right y-axis, blue)
     fig.add_trace(go.Scatter(
-        x=quarters, y=GVA['Value'], name="GVA",
-        yaxis="y3", mode="lines+markers",
-        line=dict(color="dodgerblue")
+        x=quarters, y=GVA['Value'], name="Gross Value Added",
+        yaxis="y3", mode="lines",
+        line=dict(color=TPI_colours[2])
     ))
 
     # Layout with multiple y-axes
     fig.update_layout(
-        title_text=f"OPH vs OPW vs GVA for {country_selection}",
+        title_text=f"Output per hour worked vs Hours worked vs Gross value added for {country_selection}",
         xaxis=dict(
             title="Quarters",
             showgrid=False
@@ -367,18 +372,18 @@ def multiY_plot(data, quarter, country_selection, base_year):
         yaxis=dict(
             title=dict(
                 text="Output Per Hour",
-                font=dict(color="green")
+                font=dict(color=TPI_colours[0])
             ),
-            tickfont=dict(color="green"),
+            tickfont=dict(color=TPI_colours[0]),
             side="left",
             position=0,
         ),
         yaxis2=dict(
             title=dict(
-                text="Output Per Worker",
-                font=dict(color="orange")
+                text="Hours Worked",
+                font=dict(color=TPI_colours[1])
             ),
-            tickfont=dict(color="orange"),
+            tickfont=dict(color=TPI_colours[1]),
             overlaying="y",
             side="left",
             position=0.06,
@@ -387,9 +392,9 @@ def multiY_plot(data, quarter, country_selection, base_year):
         yaxis3=dict(
             title=dict(
                 text="Gross Value Added",
-                font=dict(color="dodgerblue")
+                font=dict(color=TPI_colours[2])
             ),
-            tickfont=dict(color="dodgerblue"),
+            tickfont=dict(color=TPI_colours[2]),
             overlaying="y",
             side="right",
             position=1,
@@ -474,7 +479,8 @@ def visualisation_selection(quarterly_data, yearly_data, key, lock_quarterly):
         quarters = quarterly_data["Quarter"].unique()
         quarters = [numeric_to_quarter(x) for x in quarters]
         quarter = st.sidebar.select_slider(label = "Quarterly slider", options = quarters, value=(quarters[0], quarters[-1]), label_visibility="collapsed", key=f"Q_Slider_{key}")
-        quarterly_options = ["Output Per Hour", "Output Per Worker", "Gross Value Added"]
+        quarterly_options = list(quarterly_data["Variable"].unique())
+        # quarterly_options = ["Output Per Hour", "Output Per Worker", "Gross Value Added"]
         quarterly_option = st.sidebar.selectbox(label= "Select data", options=quarterly_options, key=f"Q_Option_{key}")
         industry_selection = ["Total"]
         if quarterly_option == "Gross Value Added":
