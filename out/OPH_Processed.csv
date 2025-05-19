@@ -1,4 +1,173 @@
 Year,Country,Value,Variable
+1999,Austria,81.066854,GDP per hour worked
+2000,Austria,82.995462,GDP per hour worked
+2001,Austria,84.054622,GDP per hour worked
+2002,Austria,85.648082,GDP per hour worked
+2003,Austria,86.323544,GDP per hour worked
+2004,Austria,88.009843,GDP per hour worked
+2005,Austria,90.130666,GDP per hour worked
+2006,Austria,92.526896,GDP per hour worked
+2007,Austria,94.8488,GDP per hour worked
+2008,Austria,94.853068,GDP per hour worked
+2009,Austria,94.187636,GDP per hour worked
+2010,Austria,95.612437,GDP per hour worked
+2011,Austria,96.561153,GDP per hour worked
+2012,Austria,97.610973,GDP per hour worked
+2013,Austria,98.238885,GDP per hour worked
+2014,Austria,98.591347,GDP per hour worked
+2015,Austria,100.0,GDP per hour worked
+2016,Austria,99.874312,GDP per hour worked
+2017,Austria,101.103167,GDP per hour worked
+2018,Austria,101.575145,GDP per hour worked
+2019,Austria,101.427562,GDP per hour worked
+2020,Austria,103.701761,GDP per hour worked
+2021,Austria,103.137449,GDP per hour worked
+2022,Austria,105.001025,GDP per hour worked
+1999,Belgium,87.413018,GDP per hour worked
+2000,Belgium,88.10764,GDP per hour worked
+2001,Belgium,88.309445,GDP per hour worked
+2002,Belgium,88.915037,GDP per hour worked
+2003,Belgium,89.66458,GDP per hour worked
+2004,Belgium,92.561794,GDP per hour worked
+2005,Belgium,93.971437,GDP per hour worked
+2006,Belgium,94.459137,GDP per hour worked
+2007,Belgium,96.205262,GDP per hour worked
+2008,Belgium,95.614367,GDP per hour worked
+2009,Belgium,94.994876,GDP per hour worked
+2010,Belgium,96.437346,GDP per hour worked
+2011,Belgium,95.778661,GDP per hour worked
+2012,Belgium,96.255207,GDP per hour worked
+2013,Belgium,97.085446,GDP per hour worked
+2014,Belgium,98.476362,GDP per hour worked
+2015,Belgium,100.0,GDP per hour worked
+2016,Belgium,100.097921,GDP per hour worked
+2017,Belgium,99.90136,GDP per hour worked
+2018,Belgium,100.107505,GDP per hour worked
+2019,Belgium,100.91419,GDP per hour worked
+2020,Belgium,104.218911,GDP per hour worked
+2021,Belgium,103.229623,GDP per hour worked
+2022,Belgium,101.839995,GDP per hour worked
+1999,Bulgaria,58.525388,GDP per hour worked
+2000,Bulgaria,63.819963,GDP per hour worked
+2001,Bulgaria,66.295349,GDP per hour worked
+2002,Bulgaria,70.05283,GDP per hour worked
+2003,Bulgaria,72.073582,GDP per hour worked
+2004,Bulgaria,73.783435,GDP per hour worked
+2005,Bulgaria,77.147492,GDP per hour worked
+2006,Bulgaria,79.950856,GDP per hour worked
+2007,Bulgaria,82.625744,GDP per hour worked
+2008,Bulgaria,83.692916,GDP per hour worked
+2009,Bulgaria,84.667213,GDP per hour worked
+2010,Bulgaria,89.531554,GDP per hour worked
+2011,Bulgaria,93.531266,GDP per hour worked
+2012,Bulgaria,96.598767,GDP per hour worked
+2013,Bulgaria,96.459257,GDP per hour worked
+2014,Bulgaria,97.072424,GDP per hour worked
+2015,Bulgaria,100.0,GDP per hour worked
+2016,Bulgaria,102.569014,GDP per hour worked
+2017,Bulgaria,103.550308,GDP per hour worked
+2018,Bulgaria,106.367902,GDP per hour worked
+2019,Bulgaria,110.240885,GDP per hour worked
+2020,Bulgaria,111.108316,GDP per hour worked
+2021,Bulgaria,118.314483,GDP per hour worked
+2022,Bulgaria,123.530359,GDP per hour worked
+1999,Croatia,72.393157,GDP per hour worked
+2000,Croatia,74.736774,GDP per hour worked
+2001,Croatia,77.603354,GDP per hour worked
+2002,Croatia,81.520002,GDP per hour worked
+2003,Croatia,84.044725,GDP per hour worked
+2004,Croatia,86.819074,GDP per hour worked
+2005,Croatia,89.738429,GDP per hour worked
+2006,Croatia,91.379979,GDP per hour worked
+2007,Croatia,93.062049,GDP per hour worked
+2008,Croatia,92.958938,GDP per hour worked
+2009,Croatia,86.95267,GDP per hour worked
+2010,Croatia,88.644695,GDP per hour worked
+2011,Croatia,92.339836,GDP per hour worked
+2012,Croatia,94.347202,GDP per hour worked
+2013,Croatia,97.444543,GDP per hour worked
+2014,Croatia,95.425044,GDP per hour worked
+2015,Croatia,100.0,GDP per hour worked
+2016,Croatia,102.874767,GDP per hour worked
+2017,Croatia,104.443618,GDP per hour worked
+2018,Croatia,105.407024,GDP per hour worked
+2019,Croatia,104.212855,GDP per hour worked
+2020,Croatia,96.628247,GDP per hour worked
+2021,Croatia,108.571454,GDP per hour worked
+2022,Croatia,112.702828,GDP per hour worked
+1999,Czechia,63.261133,GDP per hour worked
+2000,Czechia,66.001504,GDP per hour worked
+2001,Czechia,71.069051,GDP per hour worked
+2002,Czechia,72.17471,GDP per hour worked
+2003,Czechia,75.911047,GDP per hour worked
+2004,Czechia,79.07466,GDP per hour worked
+2005,Czechia,83.181538,GDP per hour worked
+2006,Czechia,88.300324,GDP per hour worked
+2007,Czechia,92.043508,GDP per hour worked
+2008,Czechia,91.746867,GDP per hour worked
+2009,Czechia,89.624169,GDP per hour worked
+2010,Czechia,91.719351,GDP per hour worked
+2011,Czechia,93.258994,GDP per hour worked
+2012,Czechia,93.645328,GDP per hour worked
+2013,Czechia,93.944265,GDP per hour worked
+2014,Czechia,95.029948,GDP per hour worked
+2015,Czechia,100.0,GDP per hour worked
+2016,Czechia,99.648324,GDP per hour worked
+2017,Czechia,103.061394,GDP per hour worked
+2018,Czechia,104.496517,GDP per hour worked
+2019,Czechia,107.318049,GDP per hour worked
+2020,Czechia,109.900343,GDP per hour worked
+2021,Czechia,110.389704,GDP per hour worked
+2022,Czechia,108.038487,GDP per hour worked
+1999,Denmark,83.683262,GDP per hour worked
+2000,Denmark,85.621617,GDP per hour worked
+2001,Denmark,85.319344,GDP per hour worked
+2002,Denmark,86.020806,GDP per hour worked
+2003,Denmark,87.440463,GDP per hour worked
+2004,Denmark,90.232667,GDP per hour worked
+2005,Denmark,91.467821,GDP per hour worked
+2006,Denmark,92.67329,GDP per hour worked
+2007,Denmark,92.844194,GDP per hour worked
+2008,Denmark,91.462002,GDP per hour worked
+2009,Denmark,90.618973,GDP per hour worked
+2010,Denmark,94.165396,GDP per hour worked
+2011,Denmark,94.491438,GDP per hour worked
+2012,Denmark,96.297436,GDP per hour worked
+2013,Denmark,97.054659,GDP per hour worked
+2014,Denmark,98.592133,GDP per hour worked
+2015,Denmark,100.0,GDP per hour worked
+2016,Denmark,101.19061,GDP per hour worked
+2017,Denmark,103.081941,GDP per hour worked
+2018,Denmark,105.350786,GDP per hour worked
+2019,Denmark,106.133113,GDP per hour worked
+2020,Denmark,106.725461,GDP per hour worked
+2021,Denmark,107.513663,GDP per hour worked
+2022,Denmark,106.085182,GDP per hour worked
+1999,Estonia,,GDP per hour worked
+2000,Estonia,60.560492,GDP per hour worked
+2001,Estonia,64.075408,GDP per hour worked
+2002,Estonia,68.349719,GDP per hour worked
+2003,Estonia,71.797424,GDP per hour worked
+2004,Estonia,76.674982,GDP per hour worked
+2005,Estonia,81.218156,GDP per hour worked
+2006,Estonia,85.312512,GDP per hour worked
+2007,Estonia,91.72215,GDP per hour worked
+2008,Estonia,88.552101,GDP per hour worked
+2009,Estonia,90.417521,GDP per hour worked
+2010,Estonia,95.231714,GDP per hour worked
+2011,Estonia,93.662779,GDP per hour worked
+2012,Estonia,96.81262,GDP per hour worked
+2013,Estonia,98.046719,GDP per hour worked
+2014,Estonia,100.577555,GDP per hour worked
+2015,Estonia,100.0,GDP per hour worked
+2016,Estonia,102.659699,GDP per hour worked
+2017,Estonia,105.677056,GDP per hour worked
+2018,Estonia,112.555701,GDP per hour worked
+2019,Estonia,116.175364,GDP per hour worked
+2020,Estonia,122.892588,GDP per hour worked
+2021,Estonia,122.809256,GDP per hour worked
+2022,Estonia,115.69194,GDP per hour worked
+1999,Euro Area,85.554444,GDP per hour worked
 2000,Euro Area,87.600335,GDP per hour worked
 2001,Euro Area,88.919177,GDP per hour worked
 2002,Euro Area,89.669796,GDP per hour worked
@@ -22,6 +191,7 @@ Year,Country,Value,Variable
 2020,Euro Area,104.828581,GDP per hour worked
 2021,Euro Area,104.752417,GDP per hour worked
 2022,Euro Area,104.683309,GDP per hour worked
+1999,European Union,81.726364,GDP per hour worked
 2000,European Union,84.367409,GDP per hour worked
 2001,European Union,86.108362,GDP per hour worked
 2002,European Union,87.790347,GDP per hour worked
@@ -45,6 +215,31 @@ Year,Country,Value,Variable
 2020,European Union,105.355454,GDP per hour worked
 2021,European Union,105.787996,GDP per hour worked
 2022,European Union,106.435971,GDP per hour worked
+1999,Finland,82.913218,GDP per hour worked
+2000,Finland,86.503324,GDP per hour worked
+2001,Finland,88.169606,GDP per hour worked
+2002,Finland,88.969225,GDP per hour worked
+2003,Finland,90.866184,GDP per hour worked
+2004,Finland,93.926272,GDP per hour worked
+2005,Finland,95.692185,GDP per hour worked
+2006,Finland,98.01956,GDP per hour worked
+2007,Finland,101.2072,GDP per hour worked
+2008,Finland,100.029482,GDP per hour worked
+2009,Finland,95.574834,GDP per hour worked
+2010,Finland,98.890126,GDP per hour worked
+2011,Finland,100.283015,GDP per hour worked
+2012,Finland,98.685671,GDP per hour worked
+2013,Finland,99.005839,GDP per hour worked
+2014,Finland,99.23664,GDP per hour worked
+2015,Finland,100.0,GDP per hour worked
+2016,Finland,102.402464,GDP per hour worked
+2017,Finland,104.965323,GDP per hour worked
+2018,Finland,103.730121,GDP per hour worked
+2019,Finland,104.021717,GDP per hour worked
+2020,Finland,104.199854,GDP per hour worked
+2021,Finland,105.554282,GDP per hour worked
+2022,Finland,106.071557,GDP per hour worked
+1999,France,85.267075,GDP per hour worked
 2000,France,87.525502,GDP per hour worked
 2001,France,89.163111,GDP per hour worked
 2002,France,91.766179,GDP per hour worked
@@ -68,6 +263,31 @@ Year,Country,Value,Variable
 2020,France,103.5224,GDP per hour worked
 2021,France,101.711063,GDP per hour worked
 2022,France,99.761299,GDP per hour worked
+1999,G7,80.753287,GDP per hour worked
+2000,G7,83.10493,GDP per hour worked
+2001,G7,84.675294,GDP per hour worked
+2002,G7,86.43755,GDP per hour worked
+2003,G7,88.061829,GDP per hour worked
+2004,G7,89.859243,GDP per hour worked
+2005,G7,91.366584,GDP per hour worked
+2006,G7,92.309591,GDP per hour worked
+2007,G7,93.217011,GDP per hour worked
+2008,G7,93.652914,GDP per hour worked
+2009,G7,94.138823,GDP per hour worked
+2010,G7,96.419398,GDP per hour worked
+2011,G7,97.105956,GDP per hour worked
+2012,G7,97.541113,GDP per hour worked
+2013,G7,98.450542,GDP per hour worked
+2014,G7,99.081615,GDP per hour worked
+2015,G7,100.0,GDP per hour worked
+2016,G7,100.321332,GDP per hour worked
+2017,G7,101.529721,GDP per hour worked
+2018,G7,102.338215,GDP per hour worked
+2019,G7,103.395775,GDP per hour worked
+2020,G7,105.887212,GDP per hour worked
+2021,G7,106.359692,GDP per hour worked
+2022,G7,105.828351,GDP per hour worked
+1999,Germany,84.962423,GDP per hour worked
 2000,Germany,87.068634,GDP per hour worked
 2001,Germany,89.255258,GDP per hour worked
 2002,Germany,90.082726,GDP per hour worked
@@ -91,6 +311,103 @@ Year,Country,Value,Variable
 2020,Germany,105.31975,GDP per hour worked
 2021,Germany,105.93029,GDP per hour worked
 2022,Germany,106.460679,GDP per hour worked
+1999,Greece,96.605035,GDP per hour worked
+2000,Greece,99.931244,GDP per hour worked
+2001,Greece,104.006363,GDP per hour worked
+2002,Greece,105.903786,GDP per hour worked
+2003,Greece,110.602216,GDP per hour worked
+2004,Greece,113.95015,GDP per hour worked
+2005,Greece,110.72315,GDP per hour worked
+2006,Greece,115.482578,GDP per hour worked
+2007,Greece,118.477915,GDP per hour worked
+2008,Greece,116.852308,GDP per hour worked
+2009,Greece,113.813902,GDP per hour worked
+2010,Greece,112.768278,GDP per hour worked
+2011,Greece,104.811438,GDP per hour worked
+2012,Greece,99.396383,GDP per hour worked
+2013,Greece,97.136754,GDP per hour worked
+2014,Greece,96.530055,GDP per hour worked
+2015,Greece,100.0,GDP per hour worked
+2016,Greece,95.857787,GDP per hour worked
+2017,Greece,97.192622,GDP per hour worked
+2018,Greece,93.804184,GDP per hour worked
+2019,Greece,95.644556,GDP per hour worked
+2020,Greece,98.568151,GDP per hour worked
+2021,Greece,98.555131,GDP per hour worked
+2022,Greece,99.755927,GDP per hour worked
+1999,Hungary,66.016295,GDP per hour worked
+2000,Hungary,69.258313,GDP per hour worked
+2001,Hungary,73.252217,GDP per hour worked
+2002,Hungary,77.419456,GDP per hour worked
+2003,Hungary,80.214211,GDP per hour worked
+2004,Hungary,85.031241,GDP per hour worked
+2005,Hungary,90.523321,GDP per hour worked
+2006,Hungary,94.371709,GDP per hour worked
+2007,Hungary,96.715796,GDP per hour worked
+2008,Hungary,99.270977,GDP per hour worked
+2009,Hungary,96.284461,GDP per hour worked
+2010,Hungary,97.518148,GDP per hour worked
+2011,Hungary,100.095506,GDP per hour worked
+2012,Hungary,98.813682,GDP per hour worked
+2013,Hungary,99.585045,GDP per hour worked
+2014,Hungary,98.424617,GDP per hour worked
+2015,Hungary,100.0,GDP per hour worked
+2016,Hungary,97.739834,GDP per hour worked
+2017,Hungary,100.725809,GDP per hour worked
+2018,Hungary,104.807861,GDP per hour worked
+2019,Hungary,109.181988,GDP per hour worked
+2020,Hungary,109.649229,GDP per hour worked
+2021,Hungary,113.860246,GDP per hour worked
+2022,Hungary,116.57385,GDP per hour worked
+1999,Iceland,69.973351,GDP per hour worked
+2000,Iceland,71.996279,GDP per hour worked
+2001,Iceland,74.704431,GDP per hour worked
+2002,Iceland,76.135828,GDP per hour worked
+2003,Iceland,78.66312,GDP per hour worked
+2004,Iceland,84.015009,GDP per hour worked
+2005,Iceland,86.508456,GDP per hour worked
+2006,Iceland,88.730449,GDP per hour worked
+2007,Iceland,94.059521,GDP per hour worked
+2008,Iceland,91.303145,GDP per hour worked
+2009,Iceland,97.143961,GDP per hour worked
+2010,Iceland,96.145908,GDP per hour worked
+2011,Iceland,96.228729,GDP per hour worked
+2012,Iceland,96.367313,GDP per hour worked
+2013,Iceland,98.391482,GDP per hour worked
+2014,Iceland,98.347418,GDP per hour worked
+2015,Iceland,100.0,GDP per hour worked
+2016,Iceland,101.109382,GDP per hour worked
+2017,Iceland,101.932426,GDP per hour worked
+2018,Iceland,104.539241,GDP per hour worked
+2019,Iceland,107.764504,GDP per hour worked
+2020,Iceland,106.094321,GDP per hour worked
+2021,Iceland,110.009448,GDP per hour worked
+2022,Iceland,110.268245,GDP per hour worked
+1999,Ireland,53.679276,GDP per hour worked
+2000,Ireland,56.645877,GDP per hour worked
+2001,Ireland,58.726286,GDP per hour worked
+2002,Ireland,61.778917,GDP per hour worked
+2003,Ireland,63.503808,GDP per hour worked
+2004,Ireland,66.250292,GDP per hour worked
+2005,Ireland,66.910261,GDP per hour worked
+2006,Ireland,68.0426,GDP per hour worked
+2007,Ireland,69.808855,GDP per hour worked
+2008,Ireland,68.704214,GDP per hour worked
+2009,Ireland,73.266124,GDP per hour worked
+2010,Ireland,77.782264,GDP per hour worked
+2011,Ireland,80.206619,GDP per hour worked
+2012,Ireland,80.701076,GDP per hour worked
+2013,Ireland,78.62888,GDP per hour worked
+2014,Ireland,82.822423,GDP per hour worked
+2015,Ireland,100.0,GDP per hour worked
+2016,Ireland,96.815128,GDP per hour worked
+2017,Ireland,101.578633,GDP per hour worked
+2018,Ireland,106.271065,GDP per hour worked
+2019,Ireland,108.664237,GDP per hour worked
+2020,Ireland,128.246668,GDP per hour worked
+2021,Ireland,138.554505,GDP per hour worked
+2022,Ireland,139.638032,GDP per hour worked
+1999,Italy,96.351086,GDP per hour worked
 2000,Italy,99.118059,GDP per hour worked
 2001,Italy,99.78275,GDP per hour worked
 2002,Italy,99.00028,GDP per hour worked
@@ -114,6 +431,79 @@ Year,Country,Value,Variable
 2020,Italy,103.942159,GDP per hour worked
 2021,Italy,102.146042,GDP per hour worked
 2022,Italy,101.854776,GDP per hour worked
+1999,Latvia,45.922338,GDP per hour worked
+2000,Latvia,50.136843,GDP per hour worked
+2001,Latvia,52.234448,GDP per hour worked
+2002,Latvia,56.059871,GDP per hour worked
+2003,Latvia,60.590619,GDP per hour worked
+2004,Latvia,66.679449,GDP per hour worked
+2005,Latvia,71.589803,GDP per hour worked
+2006,Latvia,76.340834,GDP per hour worked
+2007,Latvia,82.43881,GDP per hour worked
+2008,Latvia,82.395386,GDP per hour worked
+2009,Latvia,84.590478,GDP per hour worked
+2010,Latvia,87.35522,GDP per hour worked
+2011,Latvia,87.515313,GDP per hour worked
+2012,Latvia,93.180855,GDP per hour worked
+2013,Latvia,93.227711,GDP per hour worked
+2014,Latvia,95.768473,GDP per hour worked
+2015,Latvia,100.0,GDP per hour worked
+2016,Latvia,102.640295,GDP per hour worked
+2017,Latvia,106.975631,GDP per hour worked
+2018,Latvia,108.898169,GDP per hour worked
+2019,Latvia,111.665052,GDP per hour worked
+2020,Latvia,114.106432,GDP per hour worked
+2021,Latvia,123.106265,GDP per hour worked
+2022,Latvia,128.933022,GDP per hour worked
+1999,Lithuania,51.840165,GDP per hour worked
+2000,Lithuania,52.500276,GDP per hour worked
+2001,Lithuania,58.563237,GDP per hour worked
+2002,Lithuania,61.324488,GDP per hour worked
+2003,Lithuania,66.950441,GDP per hour worked
+2004,Lithuania,68.637759,GDP per hour worked
+2005,Lithuania,73.254776,GDP per hour worked
+2006,Lithuania,79.281199,GDP per hour worked
+2007,Lithuania,84.940907,GDP per hour worked
+2008,Lithuania,87.025483,GDP per hour worked
+2009,Lithuania,83.24896,GDP per hour worked
+2010,Lithuania,87.983806,GDP per hour worked
+2011,Lithuania,94.029757,GDP per hour worked
+2012,Lithuania,95.946361,GDP per hour worked
+2013,Lithuania,98.887005,GDP per hour worked
+2014,Lithuania,100.794043,GDP per hour worked
+2015,Lithuania,100.0,GDP per hour worked
+2016,Lithuania,98.994124,GDP per hour worked
+2017,Lithuania,106.33147,GDP per hour worked
+2018,Lithuania,108.61201,GDP per hour worked
+2019,Lithuania,112.937129,GDP per hour worked
+2020,Lithuania,119.77332,GDP per hour worked
+2021,Lithuania,123.875578,GDP per hour worked
+2022,Lithuania,120.480399,GDP per hour worked
+1999,Luxembourg,96.512311,GDP per hour worked
+2000,Luxembourg,97.67673,GDP per hour worked
+2001,Luxembourg,95.946411,GDP per hour worked
+2002,Luxembourg,96.679855,GDP per hour worked
+2003,Luxembourg,97.386617,GDP per hour worked
+2004,Luxembourg,99.194248,GDP per hour worked
+2005,Luxembourg,100.180217,GDP per hour worked
+2006,Luxembourg,102.262274,GDP per hour worked
+2007,Luxembourg,104.976601,GDP per hour worked
+2008,Luxembourg,99.90781,GDP per hour worked
+2009,Luxembourg,99.706148,GDP per hour worked
+2010,Luxembourg,101.385352,GDP per hour worked
+2011,Luxembourg,99.600059,GDP per hour worked
+2012,Luxembourg,99.210285,GDP per hour worked
+2013,Luxembourg,101.025243,GDP per hour worked
+2014,Luxembourg,100.774324,GDP per hour worked
+2015,Luxembourg,100.0,GDP per hour worked
+2016,Luxembourg,101.989921,GDP per hour worked
+2017,Luxembourg,100.480067,GDP per hour worked
+2018,Luxembourg,98.797902,GDP per hour worked
+2019,Luxembourg,98.604148,GDP per hour worked
+2020,Luxembourg,101.794205,GDP per hour worked
+2021,Luxembourg,101.767374,GDP per hour worked
+2022,Luxembourg,100.3931,GDP per hour worked
+1999,Netherlands,85.249784,GDP per hour worked
 2000,Netherlands,88.005142,GDP per hour worked
 2001,Netherlands,88.894109,GDP per hour worked
 2002,Netherlands,89.542943,GDP per hour worked
@@ -137,6 +527,7 @@ Year,Country,Value,Variable
 2020,Netherlands,99.539756,GDP per hour worked
 2021,Netherlands,102.30501,GDP per hour worked
 2022,Netherlands,102.692374,GDP per hour worked
+1999,Norway,87.106791,GDP per hour worked
 2000,Norway,90.534798,GDP per hour worked
 2001,Norway,93.890821,GDP per hour worked
 2002,Norway,95.91104,GDP per hour worked
@@ -160,6 +551,7 @@ Year,Country,Value,Variable
 2020,Norway,102.484362,GDP per hour worked
 2021,Norway,103.995967,GDP per hour worked
 2022,Norway,103.376935,GDP per hour worked
+1999,OECD Total,,GDP per hour worked
 2000,OECD Total,83.926197,GDP per hour worked
 2001,OECD Total,85.306238,GDP per hour worked
 2002,OECD Total,86.535672,GDP per hour worked
@@ -183,6 +575,7 @@ Year,Country,Value,Variable
 2020,OECD Total,108.024668,GDP per hour worked
 2021,OECD Total,107.396132,GDP per hour worked
 2022,OECD Total,106.762927,GDP per hour worked
+1999,Poland,59.075557,GDP per hour worked
 2000,Poland,63.769914,GDP per hour worked
 2001,Poland,65.973201,GDP per hour worked
 2002,Poland,69.585842,GDP per hour worked
@@ -206,6 +599,7 @@ Year,Country,Value,Variable
 2020,Poland,118.207222,GDP per hour worked
 2021,Poland,119.27761,GDP per hour worked
 2022,Poland,125.952025,GDP per hour worked
+1999,Portugal,85.19183,GDP per hour worked
 2000,Portugal,86.104635,GDP per hour worked
 2001,Portugal,87.022077,GDP per hour worked
 2002,Portugal,87.674989,GDP per hour worked
@@ -229,6 +623,7 @@ Year,Country,Value,Variable
 2020,Portugal,103.385669,GDP per hour worked
 2021,Portugal,104.766341,GDP per hour worked
 2022,Portugal,111.15899,GDP per hour worked
+1999,Romania,42.632155,GDP per hour worked
 2000,Romania,43.951489,GDP per hour worked
 2001,Romania,46.754017,GDP per hour worked
 2002,Romania,54.579905,GDP per hour worked
@@ -252,6 +647,55 @@ Year,Country,Value,Variable
 2020,Romania,120.772391,GDP per hour worked
 2021,Romania,122.138585,GDP per hour worked
 2022,Romania,127.519995,GDP per hour worked
+1999,Slovak Republic,56.628198,GDP per hour worked
+2000,Slovak Republic,58.450535,GDP per hour worked
+2001,Slovak Republic,60.502381,GDP per hour worked
+2002,Slovak Republic,64.852249,GDP per hour worked
+2003,Slovak Republic,69.939165,GDP per hour worked
+2004,Slovak Republic,71.918667,GDP per hour worked
+2005,Slovak Republic,74.29163,GDP per hour worked
+2006,Slovak Republic,78.73689,GDP per hour worked
+2007,Slovak Republic,84.679472,GDP per hour worked
+2008,Slovak Republic,86.504499,GDP per hour worked
+2009,Slovak Republic,84.027822,GDP per hour worked
+2010,Slovak Republic,89.798014,GDP per hour worked
+2011,Slovak Republic,91.203199,GDP per hour worked
+2012,Slovak Republic,92.564114,GDP per hour worked
+2013,Slovak Republic,94.803338,GDP per hour worked
+2014,Slovak Republic,96.661922,GDP per hour worked
+2015,Slovak Republic,100.0,GDP per hour worked
+2016,Slovak Republic,100.379876,GDP per hour worked
+2017,Slovak Republic,102.645876,GDP per hour worked
+2018,Slovak Republic,105.286173,GDP per hour worked
+2019,Slovak Republic,107.567588,GDP per hour worked
+2020,Slovak Republic,114.069058,GDP per hour worked
+2021,Slovak Republic,119.38223,GDP per hour worked
+2022,Slovak Republic,116.498106,GDP per hour worked
+1999,Slovenia,73.893916,GDP per hour worked
+2000,Slovenia,76.288661,GDP per hour worked
+2001,Slovenia,78.951283,GDP per hour worked
+2002,Slovenia,79.298174,GDP per hour worked
+2003,Slovenia,81.746584,GDP per hour worked
+2004,Slovenia,84.427877,GDP per hour worked
+2005,Slovenia,90.134493,GDP per hour worked
+2006,Slovenia,95.478905,GDP per hour worked
+2007,Slovenia,99.578566,GDP per hour worked
+2008,Slovenia,99.443009,GDP per hour worked
+2009,Slovenia,93.167784,GDP per hour worked
+2010,Slovenia,96.366367,GDP per hour worked
+2011,Slovenia,99.864334,GDP per hour worked
+2012,Slovenia,99.292575,GDP per hour worked
+2013,Slovenia,98.320726,GDP per hour worked
+2014,Slovenia,99.445673,GDP per hour worked
+2015,Slovenia,100.0,GDP per hour worked
+2016,Slovenia,103.474614,GDP per hour worked
+2017,Slovenia,107.368238,GDP per hour worked
+2018,Slovenia,109.957683,GDP per hour worked
+2019,Slovenia,111.220721,GDP per hour worked
+2020,Slovenia,112.078843,GDP per hour worked
+2021,Slovenia,115.169252,GDP per hour worked
+2022,Slovenia,113.49593,GDP per hour worked
+1999,Spain,86.451833,GDP per hour worked
 2000,Spain,86.853672,GDP per hour worked
 2001,Spain,86.992814,GDP per hour worked
 2002,Spain,87.127687,GDP per hour worked
@@ -275,6 +719,7 @@ Year,Country,Value,Variable
 2020,Spain,101.486085,GDP per hour worked
 2021,Spain,100.71623,GDP per hour worked
 2022,Spain,102.538091,GDP per hour worked
+1999,Sweden,76.85768,GDP per hour worked
 2000,Sweden,79.629707,GDP per hour worked
 2001,Sweden,80.260403,GDP per hour worked
 2002,Sweden,83.169216,GDP per hour worked
@@ -298,6 +743,31 @@ Year,Country,Value,Variable
 2020,Sweden,104.029507,GDP per hour worked
 2021,Sweden,107.698387,GDP per hour worked
 2022,Sweden,108.292036,GDP per hour worked
+1999,Switzerland,85.040031,GDP per hour worked
+2000,Switzerland,87.789313,GDP per hour worked
+2001,Switzerland,89.805215,GDP per hour worked
+2002,Switzerland,90.267824,GDP per hour worked
+2003,Switzerland,89.839002,GDP per hour worked
+2004,Switzerland,90.36092,GDP per hour worked
+2005,Switzerland,92.443071,GDP per hour worked
+2006,Switzerland,94.759845,GDP per hour worked
+2007,Switzerland,96.588995,GDP per hour worked
+2008,Switzerland,97.52976,GDP per hour worked
+2009,Switzerland,95.343298,GDP per hour worked
+2010,Switzerland,98.053752,GDP per hour worked
+2011,Switzerland,97.492611,GDP per hour worked
+2012,Switzerland,97.874372,GDP per hour worked
+2013,Switzerland,99.682146,GDP per hour worked
+2014,Switzerland,100.66456,GDP per hour worked
+2015,Switzerland,100.0,GDP per hour worked
+2016,Switzerland,100.642001,GDP per hour worked
+2017,Switzerland,102.256129,GDP per hour worked
+2018,Switzerland,104.616177,GDP per hour worked
+2019,Switzerland,105.19707,GDP per hour worked
+2020,Switzerland,106.933647,GDP per hour worked
+2021,Switzerland,109.949643,GDP per hour worked
+2022,Switzerland,111.020179,GDP per hour worked
+1999,UK,83.801614,GDP per hour worked
 2000,UK,87.228252,GDP per hour worked
 2001,UK,88.480893,GDP per hour worked
 2002,UK,90.430863,GDP per hour worked
@@ -321,6 +791,7 @@ Year,Country,Value,Variable
 2020,UK,103.987187,GDP per hour worked
 2021,UK,103.244366,GDP per hour worked
 2022,UK,104.285141,GDP per hour worked
+1999,US,76.818796,GDP per hour worked
 2000,US,78.928548,GDP per hour worked
 2001,US,80.660218,GDP per hour worked
 2002,US,82.891625,GDP per hour worked

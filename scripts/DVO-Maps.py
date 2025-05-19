@@ -17,8 +17,12 @@ def rebase_chain_linked_years(df, new_base_year):
 
     return df
 
-df = pd.read_csv('../out/OPH_Europe_Processed.csv')
-df = df.query("Country not in ['OECD Total', 'Euro Area', 'European Union', 'Russia'] and Year >= 2010")
+df = pd.read_csv('../out/OPH_Processed.csv')
+# df = df.query("Country not in ['OECD Total', 'Euro Area', 'European Union', 'Russia', 'G7'] and Year >= 2010")
+countries = ['Denmark', 'Finland','France', 'Germany', 'Ireland', 'Italy', "Belgium",
+             'Netherlands', 'Norway', 'Poland', 'Portugal',  'Spain', 'Sweden', 'Switzerland', 'UK', 'US']
+df = df.query(f"Country in {countries}")
+print(df['Country'].unique())
 # df = df[~df['Country'].isin(['OECD Total', 'Euro Area', 'European Union', 'Russia'])]
 
 # df = df[df['Year'] == 2022]
@@ -28,9 +32,12 @@ df['Country'] = df['Country'].replace({
     'UK': 'United Kingdom',
 })
 
-df = rebase_chain_linked_years(df, 2010)
+df = rebase_chain_linked_years(df, 1999)
+print(df)
 
 df["YoY Growth (%)"] = df.groupby("Country")["Value"].pct_change().mul(100).round(2)
+df = df.query("Year >= 2000")
+print(df)
 
 # fig = px.choropleth(
 #     df,
@@ -73,8 +80,8 @@ fig = px.choropleth(
     animation_frame="Year",
     scope="world",  # Keep the world scope to show both US and Europe
     color_continuous_scale="Plasma",
-    range_color=[1, 5],  # Adjust the color range for better visibility
-    title="Output per hour worked in the US and Europe (2000-2022)",
+    range_color=[1, 4],  # Adjust the color range for better visibility
+    title="OECD GDP per hour worked year on year growth in the US and Europe (2000-2022)",
 )
 
 # Adjust the map to focus on the US and Europe
@@ -88,3 +95,4 @@ fig.update_geos(
 )
 
 fig.show()
+fig.write_html('../out/Europe+US Choropeth.html')
