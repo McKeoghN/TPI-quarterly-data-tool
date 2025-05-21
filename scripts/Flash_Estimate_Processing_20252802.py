@@ -58,7 +58,7 @@ def line_graph(data, year, title, yAxisTitle, legendTitle):
         data, 
         x="Quarter", 
         y=data.columns.drop("Quarter").tolist(), 
-        title=f"{title} (Q1 {year} = 100)",
+        title="",
         labels={"value": f"{yAxisTitle}", "variable": f"{legendTitle}"},
         color_discrete_sequence=TPI_colours)
 
@@ -88,7 +88,7 @@ def qoq(data, title, legendTitle):
         fig.update_xaxes(title=None)
         return fig
 
-def double_qoq(data, data_two, title, legendTitle):
+def double_qoq(data, data_two, title, legendTitle, leftTitle, rightTitle):
         # data = data[['Quarter', 'OPH']]
         # data["quarter_numeric"] = data["Quarter"].apply(quarter_to_numeric)
         # data = data[(data["quarter_numeric"] >= 2022 - 0.25) & (data["quarter_numeric"] <= 2024.75)]
@@ -104,7 +104,7 @@ def double_qoq(data, data_two, title, legendTitle):
         # Create subplots with 1 row and 2 columns
         fig = make_subplots(
             rows=1, cols=2, 
-            subplot_titles=["Output per hour", f"Output per worker"]
+            subplot_titles=[f"{leftTitle}", f"{rightTitle}"]
         )
 
         # Add the first bar chart to the first subplot
@@ -184,20 +184,44 @@ def horizontal_bar(data, title):
         x=data['Contribution'],
         orientation='h',
         marker=dict(
-            color=data['Contribution'],
-            colorscale=[
-                [0, TPI_Two],  
-                [1, TPI_One]
-            ],
+            color=[TPI_One if x > 0 else TPI_Two for x in data['Contribution']],
             line=dict(color='black', width=0.5)
         ), 
         width=[w / max(data['Size']) * 0.9 for w in data['Size']],  # Normalise bar thickness
     ))
 
-    # Clean layout
+    pos_data = data[data['Contribution'] >= 0]
+    neg_data = data[data['Contribution'] < 0]
+
+    # Positive annotations
+    for i, row in pos_data.iterrows():
+        fig.add_annotation(
+            x=row['Contribution'],
+            y=row['Industry'],
+            text=f"{row['Contribution']:.1%}",
+            showarrow=False,
+            font=dict(size=14, color='black'),
+            xanchor="left",
+            xshift=5,  # spacing from end of bar
+            yshift=0
+        )
+
+    # Negative annotations
+    for i, row in neg_data.iterrows():
+        fig.add_annotation(
+            x=row['Contribution'],
+            y=row['Industry'],
+            text=f"{row['Contribution']:.1%}",
+            showarrow=False,
+            font=dict(size=14, color='black'),
+            xanchor="right",
+            xshift=0,  # spacing from end of bar
+            yshift=0
+        )
+
     fig.update_layout(
         title=f'{title}',
-        xaxis_title='Percentage point change',
+        xaxis_title='Contribution to OPH, percentage point change',
         yaxis_title='',
         bargap=0.15,
         template='simple_white',
@@ -208,6 +232,11 @@ def horizontal_bar(data, title):
             zerolinewidth=2,
             zerolinecolor='gray'
         ),
+        yaxis=dict(
+            tickfont=dict(
+                size=15,
+            )
+        )
     )
     return fig
 
@@ -226,16 +255,16 @@ def OPH(data, title):
             "Change in <b>GVA</b> and <b>hours worked</b>"
         )
     )
-
+    left_chart_data = data.sort_values(by='Output per hour worked', ascending=False)
     # Left chart: Productivity
     fig.add_trace(
         go.Bar(
-            x=data['Output per hour worked'],
-            y=data['Industry'],
+            x=left_chart_data['Output per hour worked'],
+            y=left_chart_data['Industry'],
             orientation='h',
             name='Productivity',
             marker_color=TPI_colours[0],
-            text=data['Output per hour worked'].map(lambda x: f"{x:.1f}%"),
+            text=left_chart_data['Output per hour worked'].map(lambda x: f"{x:.1f}%"),
             textposition='auto'
         ),
         row=1, col=1
@@ -294,24 +323,24 @@ def New_GDP(data):
     ))
 
     fig.update_layout(
-        title="Q1 2025 GDP Growth by Country",
+        title="",
         xaxis_title="Growth Rate (%)",
         yaxis_title="",
         template="plotly_white"
     )
     return fig
 
-# Flash_Estimate = pd.read_csv('../src/New-release/OPH Q1 2025.csv', skiprows=7, usecols=[0,1,2,3], names=["Quarter", "GVA", "Hours Worked", "OPH"])
-# # Change from Q4 1997 to 1997 Q4
-# Flash_Estimate["Quarter"] = Flash_Estimate["Quarter"].str.replace(r"(Q\d) (\d{4})", r"\2 \1", regex=True)
+# # Flash_Estimate = pd.read_csv('../src/New-release/OPH Q1 2025.csv', skiprows=7, usecols=[0,1,2,3], names=["Quarter", "GVA", "Hours Worked", "OPH"])
+# # # Change from Q4 1997 to 1997 Q4
+# # Flash_Estimate["Quarter"] = Flash_Estimate["Quarter"].str.replace(r"(Q\d) (\d{4})", r"\2 \1", regex=True)
 
-# fig = line_graph(Flash_Estimate, 1997)
-# # fig = qoq(Flash_Estimate)
-# # fig = yoy(Flash_Estimate)
+# # fig = line_graph(Flash_Estimate, 1997)
+# # # fig = qoq(Flash_Estimate)
+# # # fig = yoy(Flash_Estimate)
 
-# fig.update_layout(template="plotly_white")
+# # fig.update_layout(template="plotly_white")
 
-# fig.show()
+# # fig.show()
 
 Flash_Estimate_OPH = pd.read_csv('../src/New-release/OPH Q1 2025.csv', skiprows=7, usecols=[0,1,2,3], names=["Quarter", "Gross Value Added", "Hours Worked", "Output Per Hour"])
 Flash_Estimate_OPH["Quarter"] = Flash_Estimate_OPH["Quarter"].str.replace(r"(Q\d) (\d{4})", r"\2 \1", regex=True)
@@ -319,66 +348,94 @@ Flash_Estimate_OPH["Quarter"] = Flash_Estimate_OPH["Quarter"].str.replace(r"(Q\d
 # Flash_Estimate_OPH = pd.melt(Flash_Estimate_OPH, id_vars=['Quarter'], var_name='Variable', value_name='Value')
 # Flash_Estimate_OPH['Country'] = 'UK Flash Estimate'
 # Flash_Estimate_OPH['Industry'] = 'Total'
-# # Flash_Estimate_OPH['Variable'] = 'Flash Estimate Output per Hour'
+# Flash_Estimate_OPH['Variable'] = 'Flash Estimate Output per Hour'
 # Flash_Estimate_OPH = rebase_chain_linked_quarters(Flash_Estimate_OPH, 2020)
-fig = line_graph(Flash_Estimate_OPH, 1997, "Output per hour worked vs Hours worked vs Gross Value Added for Q1 2025 Flash Estimate data", "", "")
+base_value = Flash_Estimate_OPH.loc[Flash_Estimate_OPH["Quarter"] == "2007 Q1", "Gross Value Added"].iloc[0]
+Flash_Estimate_OPH["Gross Value Added"] = (Flash_Estimate_OPH["Gross Value Added"] / base_value) * 100
+
+base_value = Flash_Estimate_OPH.loc[Flash_Estimate_OPH["Quarter"] == "2007 Q1", "Hours Worked"].iloc[0]
+Flash_Estimate_OPH["Hours Worked"] = (Flash_Estimate_OPH["Hours Worked"] / base_value) * 100
+
+base_value = Flash_Estimate_OPH.loc[Flash_Estimate_OPH["Quarter"] == "2007 Q1", "Output Per Hour"].iloc[0]
+Flash_Estimate_OPH["Output Per Hour"] = (Flash_Estimate_OPH["Output Per Hour"] / base_value) * 100
+
+Flash_Estimate_OPH["Quarter"] = Flash_Estimate_OPH["Quarter"].apply(quarter_to_numeric)
+Flash_Estimate_OPH = Flash_Estimate_OPH[(Flash_Estimate_OPH['Quarter'] >= 2007) & (Flash_Estimate_OPH['Quarter'] <= 2025)]
+Flash_Estimate_OPH["Quarter"] = Flash_Estimate_OPH["Quarter"].apply(numeric_to_quarter)
+fig = line_graph(Flash_Estimate_OPH, 2007, "", "", "")
 fig.show()
 fig.write_image("../out/visualisations/Q1 2025 Flash Estimate.png", width=1200, height=800, scale=2)
 
-# Dataset = pd.read_csv('../out/Long_Dataset.csv')
-# Dataset = pd.concat([Dataset, Flash_Estimate_OPH])
-# Dataset.to_csv("../out/Long_Dataset.csv", index=False)
+# # Dataset = pd.read_csv('../out/Long_Dataset.csv')
+# # Dataset = pd.concat([Dataset, Flash_Estimate_OPH])
+# # Dataset.to_csv("../out/Long_Dataset.csv", index=False)
 
-# OPH_Comparison = pd.read_csv('../src/New-release/OPH LFS vs RTI.csv', skiprows=7, usecols=[0,1,2], names=["Quarter", "LFS Output per hour worked", "RTI + SE (exc working proprietors) Output per hour worked"])
-# OPH_Comparison["Quarter"] = OPH_Comparison["Quarter"].str.replace(r"(Q\d) (\d{4})", r"\2 \1", regex=True)
-# OPH_Comparison["Quarter"] = OPH_Comparison["Quarter"].apply(quarter_to_numeric)
-# OPH_Comparison = pd.melt(OPH_Comparison, id_vars=['Quarter'], var_name='Variable', value_name='Value')
-# OPH_Comparison['Country'] = 'UK Flash Estimate'
-# OPH_Comparison['Industry'] = 'Total'
-# print(OPH_Comparison)
-# Dataset = pd.read_csv('../out/Long_Dataset.csv')
-# Dataset = pd.concat([Dataset, OPH_Comparison])
-# Dataset.to_csv("../out/Long_Dataset.csv", index=False)
+# # OPH_Comparison = pd.read_csv('../src/New-release/OPH LFS vs RTI.csv', skiprows=7, usecols=[0,1,2], names=["Quarter", "LFS Output per hour worked", "RTI + SE (exc working proprietors) Output per hour worked"])
+# # OPH_Comparison["Quarter"] = OPH_Comparison["Quarter"].str.replace(r"(Q\d) (\d{4})", r"\2 \1", regex=True)
+# # OPH_Comparison["Quarter"] = OPH_Comparison["Quarter"].apply(quarter_to_numeric)
+# # OPH_Comparison = pd.melt(OPH_Comparison, id_vars=['Quarter'], var_name='Variable', value_name='Value')
+# # OPH_Comparison['Country'] = 'UK Flash Estimate'
+# # OPH_Comparison['Industry'] = 'Total'
+# # print(OPH_Comparison)
+# # Dataset = pd.read_csv('../out/Long_Dataset.csv')
+# # Dataset = pd.concat([Dataset, OPH_Comparison])
+# # Dataset.to_csv("../out/Long_Dataset.csv", index=False)
 
-# Flash_Estimate_OPH['Variable'] = 'Flash Estimate Output per Hour'
-# OPH_Comparison = rebase_chain_linked_quarters(OPH_Comparison, 2020)
-# # fig = qoq(Flash_Estimate)
-# # fig = yoy(Flash_Estimate)
+# # Flash_Estimate_OPH['Variable'] = 'Flash Estimate Output per Hour'
+# # OPH_Comparison = rebase_chain_linked_quarters(OPH_Comparison, 2020)
+# # # fig = qoq(Flash_Estimate)
+# # # fig = yoy(Flash_Estimate)
+
+# QOQ bar graphs:
 # OPH_Comparison = pd.read_csv('../src/New-release/OPH LFS vs RTI.csv', skiprows=7, usecols=[0,1,2], names=["Quarter", "LFS Output per hour worked", "RTI + SE (exc working proprietors) Output per hour worked"])
 # OPH_Comparison["Quarter"] = OPH_Comparison["Quarter"].str.replace(r"(Q\d) (\d{4})", r"\2 \1", regex=True)
 # OPH_Comparison['Quarter'] = OPH_Comparison['Quarter'].apply(quarter_to_numeric)
-# OPH_Comparison = OPH_Comparison[(OPH_Comparison['Quarter'] >= 2014.75) & (OPH_Comparison['Quarter'] <= 2025)]
-# OPH_Comparison['Quarter'] = OPH_Comparison['Quarter'].apply(numeric_to_quarter)
-# # fig = line_graph(OPH_Comparison, 2022, "OPH using LFS vs RTI", "Output per hour worked", "OPH ...")
-# # fig.update_layout(template="plotly_white")
-# # fig.show()
+
+# preCovidOPH = OPH_Comparison.copy()
+# preCovidOPH = preCovidOPH[(preCovidOPH['Quarter'] >= 2014.75) & (preCovidOPH['Quarter'] <= 2019)]
+# preCovidOPH['Quarter'] = preCovidOPH['Quarter'].apply(numeric_to_quarter)
+
+# postCovidOPH = OPH_Comparison.copy()
+# postCovidOPH = postCovidOPH[(postCovidOPH['Quarter'] >= 2021) & (postCovidOPH['Quarter'] <= 2025)]
+# postCovidOPH['Quarter'] = postCovidOPH['Quarter'].apply(numeric_to_quarter)
+
+# fig = double_qoq(preCovidOPH, postCovidOPH, "", "legend", "Output per hour worked pre-COVID", "Output per hour worked post-COVID")
+# fig.write_image("../out/visualisations/OPH - LFS vs RTI - double.png", width=1200, height=800, scale=2)
+# fig.show()
 
 # OPW_Comparison = pd.read_csv('../src/New-release/OPW LFS vs RTI.csv', skiprows=7, usecols=[0,1,2], names=["Quarter", "LFS Output per hour worked", "RTI + SE (exc working proprietors) Output per hour worked"])
 # OPW_Comparison["Quarter"] = OPW_Comparison["Quarter"].str.replace(r"(Q\d) (\d{4})", r"\2 \1", regex=True)
 # OPW_Comparison['Quarter'] = OPW_Comparison['Quarter'].apply(quarter_to_numeric)
-# OPW_Comparison = OPW_Comparison[(OPW_Comparison['Quarter'] >= 2014.75) & (OPW_Comparison['Quarter'] <= 2025)]
-# OPW_Comparison['Quarter'] = OPW_Comparison['Quarter'].apply(numeric_to_quarter)
-# # fig = line_graph(OPW_Comparison, 2022, "OPW using LFS vs RTI", "Output per worker", "OPW ...")
-# # fig.update_layout(template="plotly_white")
-# # fig.show()
 
-# # fig = qoq(OPH_Comparison, "OPH calculated using LFS vs RTI + SE QoQ growth (%)", "OPH Method")
-# # fig.show()
-# # fig.write_image("../out/visualisations/OPH - LFS vs RTI.png", width=1200, height=800, scale=2)
-# # fig = qoq(OPW_Comparison, "OPW calculated using LFS vs RTI + SE QoQ growth (%)", "OPW Method")
-# # fig.show()
+# preCovidOPW = OPW_Comparison.copy()
+# preCovidOPW = preCovidOPW[(preCovidOPW['Quarter'] >= 2014.75) & (preCovidOPW['Quarter'] <= 2019)]
+# preCovidOPW['Quarter'] = preCovidOPW['Quarter'].apply(numeric_to_quarter)
+
+# postCovidOPW = OPW_Comparison.copy()
+# postCovidOPW = postCovidOPW[(postCovidOPW['Quarter'] >= 2021) & (postCovidOPW['Quarter'] <= 2025)]
+# postCovidOPW['Quarter'] = postCovidOPW['Quarter'].apply(numeric_to_quarter)
+
+# fig = double_qoq(preCovidOPW, postCovidOPW, "", "legend", "Output per worker pre-COVID", "Output per worker post-COVID")
+# fig.write_image("../out/visualisations/OPW - LFS vs RTI - double.png", width=1200, height=800, scale=2)
+# fig.show()
+
+# fig = qoq(OPH_Comparison, "", "OPH Method")
+# fig.show()
+# fig.write_image("../out/visualisations/OPH - LFS vs RTI.png", width=1200, height=800, scale=2)
+# fig = qoq(OPW_Comparison, "", "OPW Method")
+# fig.show()
 # # fig.write_image("../out/visualisations/OPW LFS vs RTI.png", width=1200, height=800, scale=2)
 # fig = double_qoq(OPH_Comparison, OPW_Comparison, "OPH and OPW calculated using LFS vs RTI + SE QoQ growth (%)", "Method")
-# fig.write_image("../out/visualisations/OPH and OPW LFS vs RTI.png", width=1200, height=800, scale=2)
+# # # fig.write_image("../out/visualisations/OPH and OPW LFS vs RTI.png", width=1200, height=800, scale=2)
 # fig.show()
 
 # OPH_Industries = pd.read_excel('../src/New-release/Contribution To OPH.xlsx', skiprows=11, usecols=[0,1, 2], names=["Industry", "Contribution", "Size"])
-# fig = horizontal_bar(OPH_Industries, "Contribution to OPH by Industry - width of bar represents relative size of industry")
+# fig = horizontal_bar(OPH_Industries, "")
 # fig.write_image("../out/visualisations/Contribution to OPH by Industry.png", width=1200, height=800, scale=2)
 # fig.show()
 
 # OPH_Breakdown = pd.read_excel('../src/New-release/GVA OPH HW.xlsx', skiprows=6, usecols=[0,1,2,3])
-# fig = OPH(OPH_Breakdown, "Industry Breakdown: Output per hour worked, GVA, and Hours Worked")
+# fig = OPH(OPH_Breakdown, "")
 # fig.write_image("../out/visualisations/OPH GVA HW.png", width=1200, height=800, scale=2)
 # fig.show()
 
