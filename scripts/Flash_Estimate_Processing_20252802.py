@@ -330,26 +330,55 @@ def New_GDP(data):
     )
     return fig
 
-# # Flash_Estimate = pd.read_csv('../src/New-release/OPH Q1 2025.csv', skiprows=7, usecols=[0,1,2,3], names=["Quarter", "GVA", "Hours Worked", "OPH"])
-# # # Change from Q4 1997 to 1997 Q4
-# # Flash_Estimate["Quarter"] = Flash_Estimate["Quarter"].str.replace(r"(Q\d) (\d{4})", r"\2 \1", regex=True)
+# Figure 1
+OPH_Industries = pd.read_excel('../src/New-release/Contribution To OPH.xlsx', skiprows=11, usecols=[0,1, 2], names=["Industry", "Contribution", "Size"])
+fig = horizontal_bar(OPH_Industries, "")
+fig.write_image("../out/visualisations/Figure 1 - Contribution to OPH by Industry.png", width=1200, height=800, scale=2)
+fig.show()
 
-# # fig = line_graph(Flash_Estimate, 1997)
-# # # fig = qoq(Flash_Estimate)
-# # # fig = yoy(Flash_Estimate)
+# Figure 2
+OPH_Breakdown = pd.read_excel('../src/New-release/GVA OPH HW.xlsx', skiprows=6, usecols=[0,1,2,3])
+fig = OPH(OPH_Breakdown, "")
+fig.write_image("../out/visualisations/Figure 2 - OPH GVA HW.png", width=1200, height=800, scale=2)
+fig.show()
 
-# # fig.update_layout(template="plotly_white")
+# Figure 3
+OPW_Comparison = pd.read_csv('../src/New-release/OPW LFS vs RTI.csv', skiprows=7, usecols=[0,1,2], names=["Quarter", "LFS Output per hour worked", "RTI + SE (exc working proprietors) Output per hour worked"])
+OPW_Comparison["Quarter"] = OPW_Comparison["Quarter"].str.replace(r"(Q\d) (\d{4})", r"\2 \1", regex=True)
+OPW_Comparison['Quarter'] = OPW_Comparison['Quarter'].apply(quarter_to_numeric)
 
-# # fig.show()
+preCovidOPW = OPW_Comparison.copy()
+preCovidOPW = preCovidOPW[(preCovidOPW['Quarter'] >= 2014.75) & (preCovidOPW['Quarter'] <= 2019)]
+preCovidOPW['Quarter'] = preCovidOPW['Quarter'].apply(numeric_to_quarter)
 
+postCovidOPW = OPW_Comparison.copy()
+postCovidOPW = postCovidOPW[(postCovidOPW['Quarter'] >= 2021) & (postCovidOPW['Quarter'] <= 2025)]
+postCovidOPW['Quarter'] = postCovidOPW['Quarter'].apply(numeric_to_quarter)
+
+fig = double_qoq(preCovidOPW, postCovidOPW, "", "legend", "Output per worker pre-COVID", "Output per worker post-COVID")
+fig.write_image("../out/visualisations/Figure 3 - OPW - LFS vs RTI - double.png", width=1200, height=800, scale=2)
+fig.show()
+
+# Figure 4
+OPH_Comparison = pd.read_csv('../src/New-release/OPH LFS vs RTI.csv', skiprows=7, usecols=[0,1,2], names=["Quarter", "LFS Output per hour worked", "RTI + SE (exc working proprietors) Output per hour worked"])
+OPH_Comparison["Quarter"] = OPH_Comparison["Quarter"].str.replace(r"(Q\d) (\d{4})", r"\2 \1", regex=True)
+OPH_Comparison['Quarter'] = OPH_Comparison['Quarter'].apply(quarter_to_numeric)
+
+preCovidOPH = OPH_Comparison.copy()
+preCovidOPH = preCovidOPH[(preCovidOPH['Quarter'] >= 2014.75) & (preCovidOPH['Quarter'] <= 2019)]
+preCovidOPH['Quarter'] = preCovidOPH['Quarter'].apply(numeric_to_quarter)
+
+postCovidOPH = OPH_Comparison.copy()
+postCovidOPH = postCovidOPH[(postCovidOPH['Quarter'] >= 2021) & (postCovidOPH['Quarter'] <= 2025)]
+postCovidOPH['Quarter'] = postCovidOPH['Quarter'].apply(numeric_to_quarter)
+
+fig = double_qoq(preCovidOPH, postCovidOPH, "", "legend", "Output per hour worked pre-COVID", "Output per hour worked post-COVID")
+fig.write_image("../out/visualisations/Figure 4 - OPH - LFS vs RTI - double.png", width=1200, height=800, scale=2)
+fig.show()
+
+# Figure 5 
 Flash_Estimate_OPH = pd.read_csv('../src/New-release/OPH Q1 2025.csv', skiprows=7, usecols=[0,1,2,3], names=["Quarter", "Gross Value Added", "Hours Worked", "Output Per Hour"])
 Flash_Estimate_OPH["Quarter"] = Flash_Estimate_OPH["Quarter"].str.replace(r"(Q\d) (\d{4})", r"\2 \1", regex=True)
-# Flash_Estimate_OPH["Quarter"] = Flash_Estimate_OPH["Quarter"].apply(quarter_to_numeric)
-# Flash_Estimate_OPH = pd.melt(Flash_Estimate_OPH, id_vars=['Quarter'], var_name='Variable', value_name='Value')
-# Flash_Estimate_OPH['Country'] = 'UK Flash Estimate'
-# Flash_Estimate_OPH['Industry'] = 'Total'
-# Flash_Estimate_OPH['Variable'] = 'Flash Estimate Output per Hour'
-# Flash_Estimate_OPH = rebase_chain_linked_quarters(Flash_Estimate_OPH, 2020)
 base_value = Flash_Estimate_OPH.loc[Flash_Estimate_OPH["Quarter"] == "2007 Q1", "Gross Value Added"].iloc[0]
 Flash_Estimate_OPH["Gross Value Added"] = (Flash_Estimate_OPH["Gross Value Added"] / base_value) * 100
 
@@ -364,90 +393,18 @@ Flash_Estimate_OPH = Flash_Estimate_OPH[(Flash_Estimate_OPH['Quarter'] >= 2007) 
 Flash_Estimate_OPH["Quarter"] = Flash_Estimate_OPH["Quarter"].apply(numeric_to_quarter)
 fig = line_graph(Flash_Estimate_OPH, 2007, "", "", "")
 fig.show()
-fig.write_image("../out/visualisations/Q1 2025 Flash Estimate.png", width=1200, height=800, scale=2)
+fig.write_image("../out/visualisations/Figure 5 - Q1 2025 Flash Estimate.png", width=1200, height=800, scale=2)
 
-# # Dataset = pd.read_csv('../out/Long_Dataset.csv')
-# # Dataset = pd.concat([Dataset, Flash_Estimate_OPH])
-# # Dataset.to_csv("../out/Long_Dataset.csv", index=False)
+GDPdata = {
+    "Country": ["UK", "Canada", "Italy", "Germany", "France", "Japan", "US"],
+    "Growth": [0.7, 0.4, 0.3, 0.2, 0.1, -0.2, -0.3],
+    "Note": ["0.7%", "0.4%*", "0.3%", "0.2%", "0.1%", "-0.2%", "-0.3%"],
+    "Colour": ["green", "green", "green", "green", "green", "red", "red"]
+}
 
-# # OPH_Comparison = pd.read_csv('../src/New-release/OPH LFS vs RTI.csv', skiprows=7, usecols=[0,1,2], names=["Quarter", "LFS Output per hour worked", "RTI + SE (exc working proprietors) Output per hour worked"])
-# # OPH_Comparison["Quarter"] = OPH_Comparison["Quarter"].str.replace(r"(Q\d) (\d{4})", r"\2 \1", regex=True)
-# # OPH_Comparison["Quarter"] = OPH_Comparison["Quarter"].apply(quarter_to_numeric)
-# # OPH_Comparison = pd.melt(OPH_Comparison, id_vars=['Quarter'], var_name='Variable', value_name='Value')
-# # OPH_Comparison['Country'] = 'UK Flash Estimate'
-# # OPH_Comparison['Industry'] = 'Total'
-# # print(OPH_Comparison)
-# # Dataset = pd.read_csv('../out/Long_Dataset.csv')
-# # Dataset = pd.concat([Dataset, OPH_Comparison])
-# # Dataset.to_csv("../out/Long_Dataset.csv", index=False)
-
-# # Flash_Estimate_OPH['Variable'] = 'Flash Estimate Output per Hour'
-# # OPH_Comparison = rebase_chain_linked_quarters(OPH_Comparison, 2020)
-# # # fig = qoq(Flash_Estimate)
-# # # fig = yoy(Flash_Estimate)
-
-# QOQ bar graphs:
-# OPH_Comparison = pd.read_csv('../src/New-release/OPH LFS vs RTI.csv', skiprows=7, usecols=[0,1,2], names=["Quarter", "LFS Output per hour worked", "RTI + SE (exc working proprietors) Output per hour worked"])
-# OPH_Comparison["Quarter"] = OPH_Comparison["Quarter"].str.replace(r"(Q\d) (\d{4})", r"\2 \1", regex=True)
-# OPH_Comparison['Quarter'] = OPH_Comparison['Quarter'].apply(quarter_to_numeric)
-
-# preCovidOPH = OPH_Comparison.copy()
-# preCovidOPH = preCovidOPH[(preCovidOPH['Quarter'] >= 2014.75) & (preCovidOPH['Quarter'] <= 2019)]
-# preCovidOPH['Quarter'] = preCovidOPH['Quarter'].apply(numeric_to_quarter)
-
-# postCovidOPH = OPH_Comparison.copy()
-# postCovidOPH = postCovidOPH[(postCovidOPH['Quarter'] >= 2021) & (postCovidOPH['Quarter'] <= 2025)]
-# postCovidOPH['Quarter'] = postCovidOPH['Quarter'].apply(numeric_to_quarter)
-
-# fig = double_qoq(preCovidOPH, postCovidOPH, "", "legend", "Output per hour worked pre-COVID", "Output per hour worked post-COVID")
-# fig.write_image("../out/visualisations/OPH - LFS vs RTI - double.png", width=1200, height=800, scale=2)
-# fig.show()
-
-# OPW_Comparison = pd.read_csv('../src/New-release/OPW LFS vs RTI.csv', skiprows=7, usecols=[0,1,2], names=["Quarter", "LFS Output per hour worked", "RTI + SE (exc working proprietors) Output per hour worked"])
-# OPW_Comparison["Quarter"] = OPW_Comparison["Quarter"].str.replace(r"(Q\d) (\d{4})", r"\2 \1", regex=True)
-# OPW_Comparison['Quarter'] = OPW_Comparison['Quarter'].apply(quarter_to_numeric)
-
-# preCovidOPW = OPW_Comparison.copy()
-# preCovidOPW = preCovidOPW[(preCovidOPW['Quarter'] >= 2014.75) & (preCovidOPW['Quarter'] <= 2019)]
-# preCovidOPW['Quarter'] = preCovidOPW['Quarter'].apply(numeric_to_quarter)
-
-# postCovidOPW = OPW_Comparison.copy()
-# postCovidOPW = postCovidOPW[(postCovidOPW['Quarter'] >= 2021) & (postCovidOPW['Quarter'] <= 2025)]
-# postCovidOPW['Quarter'] = postCovidOPW['Quarter'].apply(numeric_to_quarter)
-
-# fig = double_qoq(preCovidOPW, postCovidOPW, "", "legend", "Output per worker pre-COVID", "Output per worker post-COVID")
-# fig.write_image("../out/visualisations/OPW - LFS vs RTI - double.png", width=1200, height=800, scale=2)
-# fig.show()
-
-# fig = qoq(OPH_Comparison, "", "OPH Method")
-# fig.show()
-# fig.write_image("../out/visualisations/OPH - LFS vs RTI.png", width=1200, height=800, scale=2)
-# fig = qoq(OPW_Comparison, "", "OPW Method")
-# fig.show()
-# # fig.write_image("../out/visualisations/OPW LFS vs RTI.png", width=1200, height=800, scale=2)
-# fig = double_qoq(OPH_Comparison, OPW_Comparison, "OPH and OPW calculated using LFS vs RTI + SE QoQ growth (%)", "Method")
-# # # fig.write_image("../out/visualisations/OPH and OPW LFS vs RTI.png", width=1200, height=800, scale=2)
-# fig.show()
-
-# OPH_Industries = pd.read_excel('../src/New-release/Contribution To OPH.xlsx', skiprows=11, usecols=[0,1, 2], names=["Industry", "Contribution", "Size"])
-# fig = horizontal_bar(OPH_Industries, "")
-# fig.write_image("../out/visualisations/Contribution to OPH by Industry.png", width=1200, height=800, scale=2)
-# fig.show()
-
-# OPH_Breakdown = pd.read_excel('../src/New-release/GVA OPH HW.xlsx', skiprows=6, usecols=[0,1,2,3])
-# fig = OPH(OPH_Breakdown, "")
-# fig.write_image("../out/visualisations/OPH GVA HW.png", width=1200, height=800, scale=2)
-# fig.show()
-
-# GDPdata = {
-#     "Country": ["UK", "Canada", "Italy", "Germany", "France", "Japan", "US"],
-#     "Growth": [0.7, 0.4, 0.3, 0.2, 0.1, -0.2, -0.3],
-#     "Note": ["0.7%", "0.4%*", "0.3%", "0.2%", "0.1%", "-0.2%", "-0.3%"],
-#     "Colour": ["green", "green", "green", "green", "green", "red", "red"]
-# }
-
-# GDPdata = pd.DataFrame(GDPdata)
-# GDPdata = GDPdata.sort_values(by="Growth", ascending=True)
-# fig = New_GDP(GDPdata)
-# fig.write_image("../out/visualisations/Q1 GDP.png", width=1200, height=800, scale=2)
-# fig.show()
+# Figure 6
+GDPdata = pd.DataFrame(GDPdata)
+GDPdata = GDPdata.sort_values(by="Growth", ascending=True)
+fig = New_GDP(GDPdata)
+fig.write_image("../out/visualisations/Figure 6 - Q1 GDP.png", width=1200, height=800, scale=2)
+fig.show()
