@@ -123,14 +123,14 @@ def SIC_Code_Combine(dataset, letters):
 UK_GVA_Division = pd.read_excel('../src/prodbydivoph.xlsx', sheet_name='Table_23', header=4)
 # Data from figure 1 and 3 from https://www.ons.gov.uk/employmentandlabourmarket/peopleinwork/labourproductivity/articles/ukproductivityintroduction/julytoseptember2025andapriltojune2025
 # , Respectively
-Flash_Estimate_OPH = pd.read_csv('../src/OPH Q3 Flash Estimate.csv', skiprows=7, usecols=[0,3], names=["Quarter", "Output Per Hour"])
-Flash_Estimate_OPW = pd.read_csv('../src/OPW Q3 Flash Estimate.csv', skiprows=7, usecols=[0,3], names=["Quarter", "Output Per Worker"])
+Flash_Estimate_OPH = pd.read_csv('../src/OPH Q4 Flash Estimate.csv', skiprows=7, usecols=[0,3], names=["Quarter", "Output Per Hour"])
+Flash_Estimate_OPW = pd.read_csv('../src/OPW Q4 Flash Estimate.csv', skiprows=7, usecols=[0,3], names=["Quarter", "Output Per Worker"])
 
 # US
 # https://www.bls.gov/productivity/
 # 'Major sectors labor productivity' in the bottom right in most requested tables
 # When updating data remember to update columns used (usecols) because new quarter column will be added
-US_data = pd.read_excel('../src/labor-productivity-major-sectors.xlsx', sheet_name='Quarterly', usecols='A,C,D, GW:LF', skiprows=2)
+US_data = pd.read_excel('../src/labor-productivity-major-sectors.xlsx', sheet_name='Quarterly', usecols='A,C,D, GW:LG', skiprows=2)
 
 # European data API call
 url = 'https://ec.europa.eu/eurostat/api/dissemination/sdmx/3.0/data/dataflow/ESTAT/namq_10_lp_ulc/1.0?format=csvdata&compress=false&,POPTRT&c[GEO]=EU27_2020,EA,DK,DE,IE,ES,FR,IT,NL,PL,RO,FI,NO&c[UNIT]=I20&c[S_ADJ]=SCA&c[TIME_PERIOD]=ge:1997+le:2030'
