@@ -393,112 +393,111 @@ def New_GDP(data, provisional_countries=None):
     return fig
 
 
-# Imports - the figure number is the figure number from the ONS blog
-# Figure 6
-OPH_Industries = pd.read_excel('../src/New-release/Figure6.xlsx', skiprows=11, usecols=[0,1, 2], names=["Industry", "Contribution", "Size"])
-# Figure 7
-OPH_Breakdown = pd.read_excel('../src/New-release/Figure7.xlsx', skiprows=6, usecols=[0,1,2,3])
-# Figure 4
-OPW_Comparison = pd.read_csv('../src/New-release/Figure4.csv', skiprows=7, usecols=[0,1,2], names=["Quarter", "LFS Output per hour worked", "RTI + SE (exc working proprietors) Output per hour worked"])
-# Figure 5
-OPH_Comparison = pd.read_csv('../src/New-release/Figure5.csv', skiprows=7, usecols=[0,1,2], names=["Quarter", "LFS Output per hour worked", "RTI + SE (exc working proprietors) Output per hour worked"])
-# Figure 1
-Flash_Estimate_OPH = pd.read_csv('../src/New-release/Figure1.csv', skiprows=7, usecols=[0,1,2,3], names=["Quarter", "Gross Value Added", "Hours Worked", "Output Per Hour"])
-
-# Figure 1
-fig = horizontal_bar(OPH_Industries, "")
-fig.update_layout(hovermode=False)
-fig.write_image("../out/figures-images/Figure 1 - Contribution to OPH by Industry.png", width=1200, height=800, scale=2)
-#fig.write_html("../out/figures-html/2025-Q3-Figure-1.html")
-#fig.show()
-
-# Figure 2
-fig = OPH(OPH_Breakdown, "")
-fig.write_image("../out/figures-images/Figure 2 - OPH GVA HW.png", width=1200, height=800, scale=2)
-#fig.write_html("../out/figures-html/2025-Q3-Figure-2.html")
-#fig.show()
-
-# Figure 3
-OPW_Comparison["Quarter"] = OPW_Comparison["Quarter"].str.replace(r"(Q\d) (\d{4})", r"\2 \1", regex=True)
-OPW_Comparison['Quarter'] = OPW_Comparison['Quarter'].apply(quarter_to_numeric)
-
-preCovidOPW = OPW_Comparison.copy()
-preCovidOPW = preCovidOPW[(preCovidOPW['Quarter'] >= 2014.75) & (preCovidOPW['Quarter'] <= 2019)]
-preCovidOPW['Quarter'] = preCovidOPW['Quarter'].apply(numeric_to_quarter)
-
-postCovidOPW = OPW_Comparison.copy()
-postCovidOPW = postCovidOPW[(postCovidOPW['Quarter'] >= 2021.25) & (postCovidOPW['Quarter'] <= 2025.75)]
-postCovidOPW['Quarter'] = postCovidOPW['Quarter'].apply(numeric_to_quarter)
-
-fig = double_qoq(preCovidOPW, postCovidOPW, "", "legend", "Output per worker pre-COVID", "Output per worker post-COVID")
-fig.write_image("../out/figures-images/Figure 3 - OPW - LFS vs RTI - double.png", width=1200, height=800, scale=2)
-#fig.write_html("../out/figures-html/2025-Q3-Figure-3.html")
-#fig.show()
-
-# Figure 4
-OPH_Comparison["Quarter"] = OPH_Comparison["Quarter"].str.replace(r"(Q\d) (\d{4})", r"\2 \1", regex=True)
-OPH_Comparison['Quarter'] = OPH_Comparison['Quarter'].apply(quarter_to_numeric)
-
-preCovidOPH = OPH_Comparison.copy()
-preCovidOPH = preCovidOPH[(preCovidOPH['Quarter'] >= 2014.75) & (preCovidOPH['Quarter'] <= 2019)]
-preCovidOPH['Quarter'] = preCovidOPH['Quarter'].apply(numeric_to_quarter)
-
-postCovidOPH = OPH_Comparison.copy()
-postCovidOPH = postCovidOPH[(postCovidOPH['Quarter'] >= 2021.25) & (postCovidOPH['Quarter'] <= 2025.75)]
-postCovidOPH['Quarter'] = postCovidOPH['Quarter'].apply(numeric_to_quarter)
-
-fig = double_qoq(preCovidOPH, postCovidOPH, "", "legend", "Output per hour worked pre-COVID", "Output per hour worked post-COVID")
-fig.write_image("../out/figures-images/Figure 4 - OPH - LFS vs RTI - double.png", width=1200, height=800, scale=2)
-#fig.write_html("../out/figures-html/2025-Q3-Figure-4.html")
-#fig.show()
-
-# Figure 5 
-Flash_Estimate_OPH["Quarter"] = Flash_Estimate_OPH["Quarter"].str.replace(r"(Q\d) (\d{4})", r"\2 \1", regex=True)
-base_value = Flash_Estimate_OPH.loc[Flash_Estimate_OPH["Quarter"] == "2007 Q1", "Gross Value Added"].iloc[0]
-Flash_Estimate_OPH["Gross Value Added"] = (Flash_Estimate_OPH["Gross Value Added"] / base_value) * 100
-
-base_value = Flash_Estimate_OPH.loc[Flash_Estimate_OPH["Quarter"] == "2007 Q1", "Hours Worked"].iloc[0]
-Flash_Estimate_OPH["Hours Worked"] = (Flash_Estimate_OPH["Hours Worked"] / base_value) * 100
-
-base_value = Flash_Estimate_OPH.loc[Flash_Estimate_OPH["Quarter"] == "2007 Q1", "Output Per Hour"].iloc[0]
-Flash_Estimate_OPH["Output Per Hour"] = (Flash_Estimate_OPH["Output Per Hour"] / base_value) * 100
-
-Flash_Estimate_OPH["Quarter"] = Flash_Estimate_OPH["Quarter"].apply(quarter_to_numeric)
-Flash_Estimate_OPH = Flash_Estimate_OPH[(Flash_Estimate_OPH['Quarter'] >= 2007) & (Flash_Estimate_OPH['Quarter'] <= 2025.75)]
-Flash_Estimate_OPH["Quarter"] = Flash_Estimate_OPH["Quarter"].apply(numeric_to_quarter)
-fig = line_graph(Flash_Estimate_OPH, "", "", 4)
-#fig.show()
-fig.write_image("../out/figures-images/Figure 5 - 2025 Flash Estimate.png", width=1200, height=800, scale=2)
-#fig.write_html("../out/figures-html/2025-Q3-Figure-5.html")
-
-
-# Figure 6 and 7 are international comparison - can't be done until all data is released
-# UK GDP data for figure 7
-# Data taken from https://www.ons.gov.uk/economy/grossdomesticproductgdp/datasets/uksecondestimateofgdpdatatables
-# Gross domestic product at market prices: Chained volume measure in A2 AGGREGATES sheet
-# UK_GDP = pd.read_excel('../src/New-release/Q3_GDP.xlsx')
-# # Data from:
-# # https://data-explorer.oecd.org/vis?df[ds]=DisseminateFinalDMZ&df[id]=DSD_NAMAIN1%40DF_QNA_EXPENDITURE_GROWTH_OECD&df[ag]=OECD.SDD.NAD&dq=Q..CAN%2BDEU%2BFRA%2BGBR%2BITA%2BJPN%2BUSA%2BOECD%2BG7%2BEA20.S1..B1GQ......G1.&pd=2024-Q1%2C&to[TIME_PERIOD]=false&ly[cl]=TIME_PERIOD&ly[rw]=REF_AREA&vw=tb
-# GDP_data = pd.read_csv('../src/New-release/OECD GDP.csv')
-# # Figure 6 - from QDT
-
+# # Imports - the figure number is the figure number from the ONS blog
+# # Figure 6
+# OPH_Industries = pd.read_excel('../src/New-release/Figure6.xlsx', skiprows=11, usecols=[0,1, 2], names=["Industry", "Contribution", "Size"])
 # # Figure 7
+# OPH_Breakdown = pd.read_excel('../src/New-release/Figure7.xlsx', skiprows=6, usecols=[0,1,2,3])
+# # Figure 4
+# OPW_Comparison = pd.read_csv('../src/New-release/Figure4.csv', skiprows=7, usecols=[0,1,2], names=["Quarter", "LFS Output per hour worked", "RTI + SE (exc working proprietors) Output per hour worked"])
+# # Figure 5
+# OPH_Comparison = pd.read_csv('../src/New-release/Figure5.csv', skiprows=7, usecols=[0,1,2], names=["Quarter", "LFS Output per hour worked", "RTI + SE (exc working proprietors) Output per hour worked"])
+# # Figure 1
+# Flash_Estimate_OPH = pd.read_csv('../src/New-release/Figure1.csv', skiprows=7, usecols=[0,1,2,3], names=["Quarter", "Gross Value Added", "Hours Worked", "Output Per Hour"])
 
+# # Figure 1
+# fig = horizontal_bar(OPH_Industries, "")
+# fig.update_layout(hovermode=False)
+# fig.write_image("../out/figures-images/Figure 1 - Contribution to OPH by Industry.png", width=1200, height=800, scale=2)
+# fig.write_html("../out/figures-html/2025-Q4-Figure-1.html")
+# #fig.show()
+
+# # Figure 2
+# fig = OPH(OPH_Breakdown, "")
+# fig.write_image("../out/figures-images/Figure 2 - OPH GVA HW.png", width=1200, height=800, scale=2)
+# fig.write_html("../out/figures-html/2025-Q4-Figure-2.html")
+# #fig.show()
+
+# # Figure 3
+# OPW_Comparison["Quarter"] = OPW_Comparison["Quarter"].str.replace(r"(Q\d) (\d{4})", r"\2 \1", regex=True)
+# OPW_Comparison['Quarter'] = OPW_Comparison['Quarter'].apply(quarter_to_numeric)
+
+# preCovidOPW = OPW_Comparison.copy()
+# preCovidOPW = preCovidOPW[(preCovidOPW['Quarter'] >= 2014.75) & (preCovidOPW['Quarter'] <= 2019)]
+# preCovidOPW['Quarter'] = preCovidOPW['Quarter'].apply(numeric_to_quarter)
+
+# postCovidOPW = OPW_Comparison.copy()
+# postCovidOPW = postCovidOPW[(postCovidOPW['Quarter'] >= 2021.25) & (postCovidOPW['Quarter'] <= 2025.75)]
+# postCovidOPW['Quarter'] = postCovidOPW['Quarter'].apply(numeric_to_quarter)
+
+# fig = double_qoq(preCovidOPW, postCovidOPW, "", "legend", "Output per worker pre-COVID", "Output per worker post-COVID")
+# fig.write_image("../out/figures-images/Figure 3 - OPW - LFS vs RTI - double.png", width=1200, height=800, scale=2)
+# fig.write_html("../out/figures-html/2025-Q4-Figure-3.html")
+# #fig.show()
+
+# # Figure 4
+# OPH_Comparison["Quarter"] = OPH_Comparison["Quarter"].str.replace(r"(Q\d) (\d{4})", r"\2 \1", regex=True)
+# OPH_Comparison['Quarter'] = OPH_Comparison['Quarter'].apply(quarter_to_numeric)
+
+# preCovidOPH = OPH_Comparison.copy()
+# preCovidOPH = preCovidOPH[(preCovidOPH['Quarter'] >= 2014.75) & (preCovidOPH['Quarter'] <= 2019)]
+# preCovidOPH['Quarter'] = preCovidOPH['Quarter'].apply(numeric_to_quarter)
+
+# postCovidOPH = OPH_Comparison.copy()
+# postCovidOPH = postCovidOPH[(postCovidOPH['Quarter'] >= 2021.25) & (postCovidOPH['Quarter'] <= 2025.75)]
+# postCovidOPH['Quarter'] = postCovidOPH['Quarter'].apply(numeric_to_quarter)
+
+# fig = double_qoq(preCovidOPH, postCovidOPH, "", "legend", "Output per hour worked pre-COVID", "Output per hour worked post-COVID")
+# fig.write_image("../out/figures-images/Figure 4 - OPH - LFS vs RTI - double.png", width=1200, height=800, scale=2)
+# fig.write_html("../out/figures-html/2025-Q4-Figure-4.html")
+# #fig.show()
+
+# # Figure 5 
+# Flash_Estimate_OPH["Quarter"] = Flash_Estimate_OPH["Quarter"].str.replace(r"(Q\d) (\d{4})", r"\2 \1", regex=True)
+# base_value = Flash_Estimate_OPH.loc[Flash_Estimate_OPH["Quarter"] == "2007 Q1", "Gross Value Added"].iloc[0]
+# Flash_Estimate_OPH["Gross Value Added"] = (Flash_Estimate_OPH["Gross Value Added"] / base_value) * 100
+
+# base_value = Flash_Estimate_OPH.loc[Flash_Estimate_OPH["Quarter"] == "2007 Q1", "Hours Worked"].iloc[0]
+# Flash_Estimate_OPH["Hours Worked"] = (Flash_Estimate_OPH["Hours Worked"] / base_value) * 100
+
+# base_value = Flash_Estimate_OPH.loc[Flash_Estimate_OPH["Quarter"] == "2007 Q1", "Output Per Hour"].iloc[0]
+# Flash_Estimate_OPH["Output Per Hour"] = (Flash_Estimate_OPH["Output Per Hour"] / base_value) * 100
+
+# Flash_Estimate_OPH["Quarter"] = Flash_Estimate_OPH["Quarter"].apply(quarter_to_numeric)
+# Flash_Estimate_OPH = Flash_Estimate_OPH[(Flash_Estimate_OPH['Quarter'] >= 2007) & (Flash_Estimate_OPH['Quarter'] <= 2025.75)]
+# Flash_Estimate_OPH["Quarter"] = Flash_Estimate_OPH["Quarter"].apply(numeric_to_quarter)
+# fig = line_graph(Flash_Estimate_OPH, "", "", 4)
+# #fig.show()
+# fig.write_image("../out/figures-images/Figure 5 - 2025 Flash Estimate.png", width=1200, height=800, scale=2)
+# fig.write_html("../out/figures-html/2025-Q4-Figure-5.html")
+
+
+# # Figure 6 data:
+# # Data taken from https://www.ons.gov.uk/economy/grossdomesticproductgdp/datasets/uksecondestimateofgdpdatatables
+# # Gross domestic product at market prices: Chained volume measure in A2 AGGREGATES sheet
+# # Table 4: Percentage change, latest quarter on previous quarter
+# UK_GDP = pd.read_excel('../src/New-release/Q4_GDP.xlsx')
+
+# # Figure 6
 # fig = px.bar(UK_GDP, x='Quarter', y='GDP', color_discrete_sequence=[TPI_One])
 # fig.update_traces(
 #     hovertemplate="<b>%{x} GDP growth</b>: %{y}%"
 # )
 # #fig.show()
-# fig.write_image("../out/figures-images/Figure 7 - UK Quarterly GDP.png", width=1200, height=600, scale=2)
-# fig.write_html("../out/figures-html/2025-Q3-Figure-6.html")
+# fig.write_image("../out/figures-images/Figure 6 - UK Quarterly GDP.png", width=1200, height=600, scale=2)
+# fig.write_html("../out/figures-html/2025-Q4-Figure-6.html")
 
-# # Figure 8
-# GDP_data = GDP_data[['Reference area', 'TIME_PERIOD', 'OBS_VALUE']].rename(columns={'TIME_PERIOD': 'Quarter', 'Reference area': 'Country', 'OBS_VALUE': 'Growth'})
-# GDP_data = GDP_data[GDP_data['Quarter'] == '2025-Q3']
-# GDP_data = GDP_data.sort_values(by="Growth", ascending=True).round(1)
-# GDP_data["Sign"] = GDP_data["Growth"].apply(lambda x: "Negative" if x < 0 else "Positive")
-# provisional_countries = ['Canada', 'Germany']
-# fig = New_GDP(GDP_data, provisional_countries)
-# #fig.show()
-# fig.write_image("../out/figures-images/Figure 8 - Q2 G7 GDP.png", width=1200, height=800, scale=2)
-# fig.write_html("../out/figures-html/2025-Q3-Figure-7.html")
+# Data from:
+# https://data-explorer.oecd.org/vis?df[ds]=DisseminateFinalDMZ&df[id]=DSD_NAMAIN1%40DF_QNA_EXPENDITURE_GROWTH_OECD&df[ag]=OECD.SDD.NAD&dq=Q..CAN%2BDEU%2BFRA%2BGBR%2BITA%2BJPN%2BUSA%2BOECD%2BG7%2BEA20.S1..B1GQ......G1.&pd=2024-Q1%2C&to[TIME_PERIOD]=false&ly[cl]=TIME_PERIOD&ly[rw]=REF_AREA&vw=tb
+GDP_data = pd.read_csv('../src/New-release/OECD GDP.csv')
+
+# Figure 7
+GDP_data = GDP_data[['Reference area', 'TIME_PERIOD', 'OBS_VALUE']].rename(columns={'TIME_PERIOD': 'Quarter', 'Reference area': 'Country', 'OBS_VALUE': 'Growth'})
+GDP_data = GDP_data[GDP_data['Quarter'] == '2025-Q4']
+GDP_data = GDP_data.sort_values(by="Growth", ascending=True).round(1)
+GDP_data["Sign"] = GDP_data["Growth"].apply(lambda x: "Negative" if x < 0 else "Positive")
+provisional_countries = ['Canada', 'Germany']
+fig = New_GDP(GDP_data, provisional_countries)
+#fig.show()
+fig.write_image("../out/figures-images/Figure 7 - Q4 G7 GDP.png", width=1200, height=800, scale=2)
+fig.write_html("../out/figures-html/2025-Q4-Figure-7.html")
