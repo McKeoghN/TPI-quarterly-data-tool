@@ -781,7 +781,7 @@ def main_code():
                         "format": "png",
                         "filename": f"{visType}",
                         "height": 600,
-                        "width": 800,
+                        "width": 1300,
                         "scale": 5
                     }
                 })
