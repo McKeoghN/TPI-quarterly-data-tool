@@ -255,7 +255,6 @@ def OPH(data, title, inside_threshold_frac=0.5):
     data['GVA'] *= 100
     data['Hours worked'] *= 100
 
-    # Prepare figure
     fig = make_subplots(
         rows=1, cols=2,
         shared_yaxes=True,
@@ -268,17 +267,11 @@ def OPH(data, title, inside_threshold_frac=0.5):
 
     left_chart_data = data.sort_values(by='Output per hour worked', ascending=False).reset_index(drop=True)
 
-    # Compute threshold based on max absolute value (so threshold is data-driven)
     max_abs_left = left_chart_data['Output per hour worked'].abs().max() if not left_chart_data.empty else 1.0
-    threshold_value = inside_threshold_frac * max_abs_left
+    threshold_left = inside_threshold_frac * max_abs_left
 
-    # Build text, textposition and font color arrays per-point
     left_text = left_chart_data['Output per hour worked'].map(lambda x: f"{x:.1f}%")
-    left_textposition = [
-        'inside' if abs(x) >= threshold_value else 'outside'
-        for x in left_chart_data['Output per hour worked']
-    ]
-
+    left_textposition = ['inside' if abs(x) >= threshold_left else 'outside' for x in left_chart_data['Output per hour worked']]
     left_textfont_color = ['white' if pos == 'inside' else 'black' for pos in left_textposition]
 
     fig.add_trace(
@@ -300,6 +293,17 @@ def OPH(data, title, inside_threshold_frac=0.5):
         row=1, col=1
     )
 
+    max_abs_right = max(data['GVA'].abs().max(), data['Hours worked'].abs().max()) if not data.empty else 1.0
+    threshold_right = inside_threshold_frac * max_abs_right
+
+    gva_text = data['GVA'].map(lambda x: f"{x:.1f}%")
+    gva_textposition = ['inside' if abs(x) >= threshold_right else 'outside' for x in data['GVA']]
+    gva_textfont_color = ['white' if pos == 'inside' else 'black' for pos in gva_textposition]
+
+    hours_text = data['Hours worked'].map(lambda x: f"{x:.1f}%")
+    hours_textposition = ['inside' if abs(x) >= threshold_right else 'outside' for x in data['Hours worked']]
+    hours_textfont_color = ['white' if pos == 'inside' else 'black' for pos in hours_textposition]
+
     fig.add_trace(
         go.Bar(
             x=data['GVA'],
@@ -307,6 +311,11 @@ def OPH(data, title, inside_threshold_frac=0.5):
             orientation='h',
             name='GVA',
             marker_color=TPI_colours[1],
+            text=gva_text,
+            textposition=gva_textposition,
+            textfont=dict(color=gva_textfont_color, size=12),
+            textangle=0,
+            cliponaxis=False,
             hovertemplate=(
                 "<b>%{y}<br></b>"
                 "<b>GVA</b>: %{x:.1f}%<extra></extra>"
@@ -322,6 +331,11 @@ def OPH(data, title, inside_threshold_frac=0.5):
             orientation='h',
             name='Hours Worked',
             marker_color=TPI_colours[2],
+            text=hours_text,
+            textposition=hours_textposition,
+            textfont=dict(color=hours_textfont_color, size=12),
+            textangle=0,
+            cliponaxis=False,
             hovertemplate=(
                 "<b>%{y}<br></b>"
                 "<b>Hours worked</b>: %{x:.1f}%<extra></extra>"
@@ -330,7 +344,6 @@ def OPH(data, title, inside_threshold_frac=0.5):
         row=1, col=2
     )
 
-    # Layout
     fig.update_layout(
         height=1000,
         barmode='group',
@@ -338,14 +351,12 @@ def OPH(data, title, inside_threshold_frac=0.5):
         showlegend=True,
         legend=dict(x=0.65, y=1.1, orientation='h'),
         margin=dict(l=120, r=20, t=60, b=20),
-        template='simple_white'
+        template='simple_white',
+        uniformtext=dict(minsize=12, mode='show')
     )
 
-    # Center x-axes at zero
     fig.update_xaxes(title_text="", zeroline=True, row=1, col=1, tickformat=".1f")
     fig.update_xaxes(title_text="", zeroline=True, row=1, col=2, tickformat=".1f")
-
-    # Reverse y so highest is on top
     fig.update_yaxes(autorange='reversed')
 
     return fig
@@ -422,19 +433,19 @@ Flash_Estimate_OPH["Quarter"] = Flash_Estimate_OPH["Quarter"].apply(numeric_to_q
 fig = line_graph(Flash_Estimate_OPH, "", "", 1)
 #fig.show()
 fig.write_image("../out/figures-images/Figure 1 - 2026 Flash Estimate.png", width=1200, height=800, scale=2)
-fig.write_html("../out/figures-html/2025-Q4-Figure-1.html")
+fig.write_html("../out/figures-html/2026-Q1-Figure-1.html")
 
 # Figure 2
 fig = horizontal_bar(OPH_Industries, "")
 fig.update_layout(hovermode=False)
 fig.write_image("../out/figures-images/Figure 2 - Contribution to OPH by Industry.png", width=1200, height=800, scale=2)
-fig.write_html("../out/figures-html/2025-Q4-Figure-2.html")
+fig.write_html("../out/figures-html/2026-Q1-Figure-2.html")
 #fig.show()
 
 # Figure 3
 fig = OPH(OPH_Breakdown, "")
 fig.write_image("../out/figures-images/Figure 3 - OPH GVA HW.png", width=1200, height=800, scale=2)
-fig.write_html("../out/figures-html/2025-Q4-Figure-3.html")
+fig.write_html("../out/figures-html/2026-Q1-Figure-3.html")
 #fig.show()
 
 # Figure 4
@@ -454,7 +465,7 @@ postCovidOPW['Quarter'] = postCovidOPW['Quarter'].apply(numeric_to_quarter)
 
 fig = double_qoq(preCovidOPW, postCovidOPW, "", "legend", "Output per worker pre-COVID", "Output per worker post-COVID")
 fig.write_image("../out/figures-images/Figure 4 - OPW - LFS vs RTI - double.png", width=1200, height=800, scale=2)
-fig.write_html("../out/figures-html/2025-Q4-Figure-4.html")
+fig.write_html("../out/figures-html/2026-Q1-Figure-4.html")
 #fig.show()
 
 # Figure 5
@@ -471,7 +482,7 @@ postCovidOPH['Quarter'] = postCovidOPH['Quarter'].apply(numeric_to_quarter)
 
 fig = double_qoq(preCovidOPH, postCovidOPH, "", "legend", "Output per hour worked pre-COVID", "Output per hour worked post-COVID")
 fig.write_image("../out/figures-images/Figure 5 - OPH - LFS vs RTI - double.png", width=1200, height=800, scale=2)
-fig.write_html("../out/figures-html/2025-Q4-Figure-5.html")
+fig.write_html("../out/figures-html/2026-Q1-Figure-5.html")
 #fig.show()
 
 
@@ -484,11 +495,15 @@ fig.write_html("../out/figures-html/2025-Q4-Figure-5.html")
 UK_GDP = pd.read_excel('../src/New-release/Q1_GDP.xlsx')
 fig = px.bar(UK_GDP, x='Quarter', y='GDP', color_discrete_sequence=[TPI_One])
 fig.update_traces(
+    text=UK_GDP['GDP'].map(lambda x: f"{x:.1f}%"),
+    textposition='outside',
+    textfont=dict(size=12),
+    cliponaxis=False,
     hovertemplate="<b>%{x} GDP growth</b>: %{y}%"
 )
 #fig.show()
 fig.write_image("../out/figures-images/Figure 6 - UK Quarterly GDP.png", width=1200, height=600, scale=2)
-fig.write_html("../out/figures-html/2025-Q4-Figure-6.html")
+fig.write_html("../out/figures-html/2026-Q1-Figure-6.html")
 
 # Data from:
 # https://data-explorer.oecd.org/vis?df[ds]=DisseminateFinalDMZ&df[id]=DSD_NAMAIN1%40DF_QNA_EXPENDITURE_GROWTH_OECD&df[ag]=OECD.SDD.NAD&dq=Q..CAN%2BDEU%2BFRA%2BGBR%2BITA%2BJPN%2BUSA%2BOECD%2BG7%2BEA20.S1..B1GQ......G1.&pd=2024-Q1%2C&to[TIME_PERIOD]=false&ly[cl]=TIME_PERIOD&ly[rw]=REF_AREA&vw=tb
