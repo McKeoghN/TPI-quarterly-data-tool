@@ -70,7 +70,7 @@ def EU_GVA_Process(country_code_map, sector_code_map):
     EU_GVA["Country"] = EU_GVA["Country"].str.replace("European Union - 27 countries (from 2020)", "European Union", regex=False)
     return EU_GVA
 
-def generate():
+def generate(current_quarter):
     # url = 'https://ec.europa.eu/eurostat/api/dissemination/sdmx/3.0/data/dataflow/ESTAT/namq_10_lp_ulc/1.0?format=csvdata&compress=false&,POPTRT&c[GEO]=EU27_2020&c[UNIT]=I20&c[S_ADJ]=SCA&c[TIME_PERIOD]=ge:1997+le:2030'
     # EU_OPH_OPW = pd.read_csv(url)
     # EU_OPH_OPW = EU_OPH_OPW.rename(columns={"TIME_PERIOD": "Quarter", "na_item": "Variable", "geo": "Country", "OBS_VALUE": "Value"})
@@ -221,8 +221,16 @@ def generate():
     Euro_Area_Table = Euro_Table[Euro_Table['Country'] == 'Euro Area']
 
     quarters = pd.PeriodIndex(
-        ['2025Q4', '2025Q3', '2025Q2', '2025Q1'],
+        ['2025Q4', '2025Q3', '2025Q2', '2025Q1'],  # remove
         freq='Q'
+    )
+
+    initial_quarter = "2025Q1"
+
+    quarters = pd.period_range(
+        start=initial_quarter,
+        end=current_quarter,
+        freq="Q"
     )
 
     Euro_Area_Table = Euro_Area_Table[
@@ -230,7 +238,7 @@ def generate():
     ]
 
     European_Figures = Euro_Table[
-        Euro_Table['Quarter'] == '2025Q4'
+        Euro_Table['Quarter'] == current_quarter
     ]
 
     with pd.ExcelWriter('scripts/EU_Figures/EU_Figures.xlsx',

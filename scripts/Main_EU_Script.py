@@ -2,16 +2,15 @@ import pandas as pd
 import scripts.EU_Scripts.Euro_Blog_Processing as Euro_Blog_Processing
 import scripts.EU_Scripts.Ireland_Adj as Ireland_Adj
 
-Unemployment_Link = 'https://ec.europa.eu/eurostat/api/dissemination/sdmx/3.0/data/dataflow/ESTAT/une_rt_m/1.0/*.*.*.*.*.*?c[freq]=M&c[s_adj]=NSA,SA&c[age]=TOTAL&c[unit]=THS_PER,PC_ACT&c[sex]=T&c[geo]=EU27_2020,EA21,BE,BG,CZ,DK,DE,EE,IE,EL,ES,FR,HR,IT,CY,LV,LT,LU,HU,MT,NL,AT,PL,PT,RO,SI,SK,FI,SE,IS,NO,CH,UK,BA,MK,TR,US,JP&c[TIME_PERIOD]=2026-04,2026-03,2026-02,2026-01,2025-12,2025-11,2025-10,2025-09,2025-08,2025-07,2025-06,2025-05,2025-04,2025-03,2025-02,2025-01,2024-12,2024-11,2024-10,2024-09,2024-08,2024-07,2024-06,2024-05,2024-04,2024-03,2024-02,2024-01,2023-12,2023-11,2023-10,2023-09,2023-08,2023-07,2023-06,2023-05,2023-04,2023-03,2023-02,2023-01,2022-12,2022-11,2022-10,2022-09,2022-08,2022-07,2022-06,2022-05,2022-04,2022-03,2022-02,2022-01&compress=false&format=csvdata&formatVersion=1.0&lang=en&labels=label_only'
+current_quarter = "2025Q4"
+Euro_Blog_Processing.generate(current_quarter)
+Ireland_Adj.generate(current_quarter)
 
-Euro_Blog_Processing.generate()
-Ireland_Adj.generate()
+out_path = 'scripts/EU_Figures/'
+with pd.ExcelWriter(f"{out_path}/{current_quarter}_EU_Figures.xlsx", engine="openpyxl") as writer:
 
-# with pd.ExcelWriter("combined.xlsx", engine="openpyxl") as writer:
+    for file in [f"{out_path}/EU_Figures.xlsx", f"{out_path}/OPH_Figures.xlsx"]:
+        sheets = pd.read_excel(file, sheet_name=None)
 
-#     for file in ["file1.xlsx", "file2.xlsx"]:
-#         sheets = pd.read_excel(file, sheet_name=None)
-
-#         for sheet_name, df in sheets.items():
-#             df.to_excel(writer, sheet_name=sheet_name, index=False)
-
+        for sheet_name, df in sheets.items():
+            df.to_excel(writer, sheet_name=sheet_name, index=False)

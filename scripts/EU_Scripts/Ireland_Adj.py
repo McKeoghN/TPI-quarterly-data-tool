@@ -1,6 +1,6 @@
 import pandas as pd
 
-def generate():
+def generate(current_quarter):
     # Ireland_GVA = pd.read_csv('../src/Ireland_Data.csv') # Replaced with API call
     Ireland_GVA = pd.read_csv('https://ws.cso.ie/public/api.restful/PxStat.Data.Cube_API.ReadDataset/NAQ06/CSV/1.0/en', usecols=["STATISTIC","Statistic Label","TLIST(Q1)","Quarter","C02937V03552","Sector","UNIT","VALUE"])
 
@@ -36,13 +36,11 @@ def generate():
 
     Ireland_GVA = Ireland_GVA[
         (Ireland_GVA["Quarter"] >= "2023Q1") &
-        (Ireland_GVA["Quarter"] <= "2025Q4")
+        (Ireland_GVA["Quarter"] <= current_quarter)
     ]
 
     Ireland_GVA['Country'] = 'Ireland'
     Ireland_GVA = Ireland_GVA[['Country', 'Quarter', 'Value']]
-
-    print(Ireland_GVA)
 
     # EuroZone = pd.read_csv('../src/EuroZoneGVA.csv')
     EuroZone_URL = 'https://ec.europa.eu/eurostat/api/dissemination/sdmx/3.0/data/dataflow/ESTAT/namq_10_gdp/1.0/*.*.*.*.*?c[freq]=Q&c[unit]=CP_MEUR,PD20_EUR&c[s_adj]=SCA&c[na_item]=B1G&c[geo]=BE,DE,EE,EL,ES,FR,HR,IT,CY,LV,LT,LU,MT,NL,AT,PT,SI,SK,FI&c[TIME_PERIOD]=2025-Q4,2025-Q3,2025-Q2,2025-Q1,2024-Q4,2024-Q3,2024-Q2,2024-Q1,2023-Q4,2023-Q3,2023-Q2,2023-Q1&compress=false&format=csvdata&formatVersion=2.0&lang=en&labels=name'
@@ -156,17 +154,17 @@ def generate():
 
         EuroZone_Productivity.to_excel(
             writer,
-            sheet_name="Adjusted Eurozone GVAH",
+            sheet_name="Adjusted Eurozone GVA per hour",
             index=False
         )
 
         EuroZone_Productivity_IE.to_excel(
             writer,
-            sheet_name="Unadjusted Eurozone GVAH",
+            sheet_name="Unadjusted Eurozone GVA per hour",
             index=False
         )
 
     # EuroZone_Productivity_IE.to_excel("EU_Figures/EuroZone_Productivity_Eurostat.xlsx", index=False)
-    print("Original")
-    print(EuroZone_Productivity_IE["GVA"])
-    print(EuroZone_Productivity_IE["Hours"])
+    # print("Original")
+    # print(EuroZone_Productivity_IE["GVA"])
+    # print(EuroZone_Productivity_IE["Hours"])
