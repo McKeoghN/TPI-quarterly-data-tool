@@ -1,12 +1,14 @@
 import pandas as pd
 import scripts.EU_Scripts.Euro_Blog_Processing as Euro_Blog_Processing
 import scripts.EU_Scripts.Ireland_Adj as Ireland_Adj
-import scripts.EU_Scripts.EU_Vis as EU_Vis
+import scripts.EU_Scripts.Sectoral_Productivity as Sectoral_Productivity
+import scripts.EU_Scripts.EU_Line as EU_Line
 
 current_quarter = "2025Q4"
-Euro_Blog_Processing.generate(current_quarter)
-Ireland_Adj.generate(current_quarter)
-EU_Vis.generate(current_quarter)
+# Euro_Blog_Processing.generate(current_quarter)
+# Ireland_Adj.generate(current_quarter)
+Sectoral_Productivity.generate(current_quarter)
+# EU_Line.generate()
 
 out_path = 'scripts/EU_Figures/'
 with pd.ExcelWriter(f"{out_path}/{current_quarter}_EU_Figures.xlsx", engine="openpyxl") as writer:

@@ -3,6 +3,167 @@ import plotly.graph_objects as go
 
 # Unemployment_URL = 'https://ec.europa.eu/eurostat/api/dissemination/sdmx/3.0/data/dataflow/ESTAT/une_rt_m/1.0/*.*.*.*.*.*?c[freq]=M&c[s_adj]=NSA,SA&c[age]=TOTAL&c[unit]=THS_PER,PC_ACT&c[sex]=T&c[geo]=EU27_2020,EA21,BE,BG,CZ,DK,DE,EE,IE,EL,ES,FR,HR,IT,CY,LV,LT,LU,HU,MT,NL,AT,PL,PT,RO,SI,SK,FI,SE,IS,NO,CH,UK,BA,MK,TR,US,JP&c[TIME_PERIOD]=2026-04,2026-03,2026-02,2026-01,2025-12,2025-11,2025-10,2025-09,2025-08,2025-07,2025-06,2025-05,2025-04,2025-03,2025-02,2025-01,2024-12,2024-11,2024-10,2024-09,2024-08,2024-07,2024-06,2024-05,2024-04,2024-03,2024-02,2024-01,2023-12,2023-11,2023-10,2023-09,2023-08,2023-07,2023-06,2023-05,2023-04,2023-03,2023-02,2023-01,2022-12,2022-11,2022-10,2022-09,2022-08,2022-07,2022-06,2022-05,2022-04,2022-03,2022-02,2022-01&compress=false&format=csvdata&formatVersion=1.0&lang=en&labels=label_only'
 
+Industries_Short_Dict = {
+    'Agriculture, forestry and fishing': 'Agriculture & Forestry',
+    'Industry (except construction)': 'Industry (excluding construction)',
+    'Manufacturing': 'Manufacturing',
+    'Construction': 'Construction',
+    'Wholesale and retail trade, transport, accommodation and food service activities': 'Trade, transport, and hospitality',
+    'Information and communication': 'ICT',
+    'Financial and insurance activities': 'Finance & insurance',
+    'Real estate activities': 'Real estate',
+    'Professional, scientific and technical activities; administrative and support service activities': 'Professional & admin services',
+    'Public administration, defence, education, human health and social work activities': 'Public admin, defence, education, health',
+    'Arts, entertainment and recreation; other service activities; activities of household and extra-territorial organizations and bodies': 'Arts, entertainment & other services',
+    'Total - all NACE activities': 'Total - all NACE activities'
+}
+
+def plot_latest_industry_growth_bar(
+    df,
+    value_col,
+    current_quarter,
+    yoy=False,
+    title=None,
+    top_n=None
+):
+    df = df.copy()
+
+    quarter_fmt = current_quarter.replace("Q", "-Q")
+
+    # map short names if available
+    if 'Industries_Short_Dict' in globals():
+        df['Industry'] = df['Industry'].map(Industries_Short_Dict).fillna(df['Industry'])
+
+    # ensure correct sorting before pct_change
+    df = df.sort_values(['Industry', 'Quarter'])
+    df = df[df['Country'] == 'Euro Zone'].copy()
+
+    shift_n = 4 if yoy else 1
+
+    df['Growth'] = df.groupby('Industry')[value_col].pct_change(shift_n) * 100
+
+    # filter to latest quarter
+    df = df[df['Quarter'] <= quarter_fmt]
+    latest = df['Quarter'].max()
+    df = df[df['Quarter'] == latest].dropna(subset=['Growth'])
+
+    df = df.sort_values('Growth')
+
+    if top_n:
+        df = df.tail(top_n)
+
+    pos_colour = "#03979d"
+    neg_colour = "#eb5e5e"
+
+    colors = [pos_colour if x > 0 else neg_colour for x in df['Growth']]
+
+    fig = go.Figure()
+
+    fig.add_trace(go.Bar(
+        y=df['Industry'],
+        x=df['Growth'],
+        orientation='h',
+        marker=dict(
+            color=colors,
+            line=dict(color='black', width=0.5)
+        ),
+        hovertemplate="<b>%{y}</b><br>Growth: %{x:.2f}%<extra></extra>"
+    ))
+
+    for _, row in df.iterrows():
+        fig.add_annotation(
+            x=row['Growth'],
+            y=row['Industry'],
+            text=f"{row['Growth']:.1f}%",
+            showarrow=False,
+            font=dict(size=13, color='black'),
+            xanchor="left" if row['Growth'] >= 0 else "right",
+            xshift=5 if row['Growth'] >= 0 else -5
+        )
+
+    fig.update_layout(
+        xaxis_title="Growth (%)",
+        yaxis_title="",
+        template="simple_white",
+        height=450 + len(df) * 22,
+        bargap=0.15,
+        xaxis=dict(
+            zeroline=True,
+            zerolinewidth=2,
+            zerolinecolor="gray",
+        ),
+        yaxis=dict(tickfont=dict(size=13))
+    )
+    fig.update_xaxes(range=[-4, 4])
+    fig.update_layout(
+        template='simple_white',
+        width=900,
+        margin=dict(l=180, r=40, t=80, b=40)
+    )
+
+
+    return fig
+
+def plot_eurozone_industry_growth( # Nvm this looks bad
+    df,
+    value_col,
+    current_quarter,
+    Industries_Short_Dict,
+    Industries_Short,
+    yoy=False,
+    industries=None,
+):
+    euro = df[df['Country'] == 'Euro Zone'].copy()
+
+    euro = euro.sort_values(['Industry', 'Quarter'])
+
+    shift_n = 4 if yoy else 1
+    euro['Growth'] = euro.groupby('Industry')[value_col].pct_change(shift_n) * 100
+
+    quarter_fmt = current_quarter.replace("Q", "-Q")
+    euro = euro[euro['Quarter'] <= quarter_fmt]
+
+    # --- map to short names ---
+    euro['Industry'] = euro['Industry'].map(Industries_Short_Dict).fillna(euro['Industry'])
+
+    if industries is not None:
+        euro = euro[euro['Industry'].isin(industries)]
+
+    fig = go.Figure()
+
+    # --- enforce legend order ---
+    ordered_industries = [
+        ind for ind in Industries_Short
+        if ind in euro['Industry'].unique()
+    ]
+
+    for industry in ordered_industries:
+        d = euro[euro['Industry'] == industry]
+
+        fig.add_trace(go.Scatter(
+            x=d['Quarter'],
+            y=d['Growth'],
+            mode='lines',
+            name=industry,
+            hovertemplate=(
+                "<b>%{fullData.name}</b><br>"
+                "Quarter: %{x}<br>"
+                "Growth: %{y:.2f}%<extra></extra>"
+            )
+        ))
+
+    fig.update_layout(
+        title=f"Euro Zone Industry {'YoY' if yoy else 'QoQ'} Growth ({value_col})",
+        xaxis_title="Quarter",
+        yaxis_title="Growth (%)",
+        hovermode="x unified",
+        legend_title="Industry",
+        margin=dict(l=60, r=30, t=80, b=50),
+        height=600
+    )
+
+    return fig
+
 def generate(current_quarter):
     path = 'scripts/EU_Figures'
 
@@ -187,3 +348,22 @@ def generate(current_quarter):
     # fig.show()
     fig.write_image(f"{path}/images/2026-Q1-Figure-1.png", width=1200, height=600, scale=2)
     fig.write_html(f"{path}/html/2026-Q1-Figure-1.html")
+
+    # fig = plot_eurozone_industry_growth(
+    #     GVA_per_Hour_idx,
+    #     value_col='GVA_per_Hour',
+    #     current_quarter=current_quarter,
+    #     Industries_Short_Dict=Industries_Short_Dict,
+    #     Industries_Short=Industries_Short,
+    #     yoy=False,
+    # )
+    # fig.show()
+
+    fig = plot_latest_industry_growth_bar(
+        GVA_per_Hour_idx,
+        value_col="GVA_per_Hour",
+        current_quarter=current_quarter,
+        yoy=False
+    )
+    fig.write_image(f"{path}/images/2026-Q1-Figure-3.png", width=1000, height=600, scale=2)
+    fig.write_html(f"{path}/html/2026-Q1-Figure-3.html")
