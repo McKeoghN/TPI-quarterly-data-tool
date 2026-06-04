@@ -102,9 +102,9 @@ def generate(current_quarter):
     EuroZone_Hours = EuroZone_Hours.groupby("Quarter")["Hours"].sum().reset_index()
     EuroZone_Productivity = pd.merge(EuroZone_GVA, EuroZone_Hours, on="Quarter")
     EuroZone_Productivity["productivity"] = (EuroZone_Productivity["GVA"] / EuroZone_Productivity["Hours"]) * 1000
-    print("Ireland adjusted")
-    print(EuroZone_Productivity["GVA"])
-    print(EuroZone_Productivity["Hours"])
+    # print("Ireland adjusted")
+    # print(EuroZone_Productivity["GVA"])
+    # print(EuroZone_Productivity["Hours"])
 
     EuroZone_Productivity = EuroZone_Productivity.sort_values("Quarter").reset_index(drop=True)
 
