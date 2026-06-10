@@ -12,7 +12,7 @@ def generate():
             })
 
     prod['Country'] = prod['Country'].replace({
-            'Euro area (EA11-1999, EA12-2001, EA13-2007, EA15-2008, EA16-2009, EA17-2011, EA18-2014, EA19-2015, EA20-2023, EA21-2026)': 'Euro Zone',
+            'Euro area – 21 countries (from 2026)': 'Euro Zone',
             'European Union - 27 countries (from 2020)': 'European Union'                                           
         })
 
@@ -46,7 +46,9 @@ def generate():
 
     fig.update_layout(
         hovermode='closest',
-        legend_title='Country'
+        legend_title='Country',
+        xaxis_title=None,
+        yaxis_title=None
     )
     fig.update_xaxes(
         dtick="M3",           # every quarter

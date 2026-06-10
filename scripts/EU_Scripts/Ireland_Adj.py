@@ -1,43 +1,60 @@
 import pandas as pd
 import plotly.graph_objects as go
+import plotly.express as px
 
-def plot_productivity(country_productivity, key_countries):  # I don't think its correct to do this
+def plot_productivity(country_productivity, EuroZone_Productivity, EuroZone_Productivity_IE, key_countries):
 
-    EUROZONE_COUNTRY = 'Eurozone_Adjusted'
-    COLOURS = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd']
+    EUROZONE_ADJUSTED = 'Euro Area Adjusted'
+    EUROZONE_UNADJUSTED = 'Eurozone'
 
-    fig = go.Figure()
+    ez_adj = EuroZone_Productivity.copy()
+    ez_adj['Country'] = EUROZONE_ADJUSTED
 
-    colour_idx = 0
-    for country in key_countries:
-        df = country_productivity[country_productivity["Country"] == country].sort_values("Quarter")
-        x = df["Quarter"].astype(str)
-        y = df["productivity"]
+    # ez_unadj = EuroZone_Productivity_IE.copy()
+    # ez_unadj['Country'] = EUROZONE_UNADJUSTED
 
-        if country == EUROZONE_COUNTRY:
-            fig.add_trace(go.Scatter(
-                x=x, y=y,
-                name="Eurozone (Adjusted)",
-                line=dict(color='grey', dash='dot', width=2)
-            ))
-        else:
-            fig.add_trace(go.Scatter(
-                x=x, y=y,
-                name=country,
-                line=dict(color=COLOURS[colour_idx], width=2)
-            ))
-            colour_idx += 1
+    countries = country_productivity[country_productivity['Country'].isin(key_countries)].copy()
 
-    fig.update_layout(
-        title="Output per Hour Worked",
-        xaxis_title="Quarter",
-        yaxis_title="GVA per Hour (€)",
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
-        template="plotly_white",
-        hovermode="x unified"
+    prod = pd.concat([
+        ez_adj[['Country', 'Quarter', 'productivity']],
+        countries[['Country', 'Quarter', 'productivity']],
+        # ez_unadj[['Country', 'Quarter', 'productivity']]
+    ]).rename(columns={'productivity': 'Value'})
+    base = prod[prod['Quarter'].dt.year == 2010].groupby('Country')['Value'].mean()
+    prod['Value'] = prod.apply(lambda row: (row['Value'] / base[row['Country']]) * 100, axis=1)
+
+    tickvals = prod[prod['Quarter'].dt.quarter == 1]['Quarter'].dt.to_timestamp().unique()
+    prod['Quarter'] = prod['Quarter'].dt.to_timestamp()
+
+    fig = px.line(
+        prod,
+        x='Quarter',
+        y='Value',
+        color='Country',
     )
 
-    # fig.show()
+    fig.update_layout(
+        # title='Output per Hour Worked',
+        hovermode='closest',
+        legend_title=None,
+        xaxis_title=None,
+        yaxis_title=None,
+        template='plotly_white'
+    )
+    fig.update_xaxes(
+        dtick="M3",
+        tickformat="%Y-Q%q"
+    )
+
+    for trace in fig.data:
+        trace.hovertemplate = (
+            "<b>%{fullData.name}</b><br>"
+            "Quarter: %{x|%Y-Q%q}<br>"
+            "Index: %{y:.1f}<br>"
+            "<extra></extra>"
+        )
+    fig.update_xaxes(tickvals=tickvals, tickformat="%Y-Q%q")
+    return fig 
 
 def per_country(merged, merged_IE, Ireland_GVA, EuroZone_Hours_raw, EuroZone_Productivity, EuroZone_Productivity_IE):
 
@@ -116,8 +133,11 @@ def generate(current_quarter):
     ]
     Ireland_GVA['Country'] = 'Ireland'
     Ireland_GVA = Ireland_GVA[['Country', 'Quarter', 'Value']]
+    print("Ireland GVA:")
+    print(Ireland_GVA)
 
-    EuroZone_URL = 'https://ec.europa.eu/eurostat/api/dissemination/sdmx/3.0/data/dataflow/ESTAT/namq_10_gdp/1.0/*.*.*.*.*?c[freq]=Q&c[unit]=CP_MEUR,PD20_EUR&c[s_adj]=SCA&c[na_item]=B1G&c[geo]=BE,DE,EE,EL,ES,FR,HR,IT,CY,LV,LT,LU,MT,NL,AT,PT,SI,SK,FI&c[TIME_PERIOD]=2025-Q4,2025-Q3,2025-Q2,2025-Q1,2024-Q4,2024-Q3,2024-Q2,2024-Q1,2023-Q4,2023-Q3,2023-Q2,2023-Q1&compress=false&format=csvdata&formatVersion=2.0&lang=en&labels=name'
+    # Extended TIME_PERIOD back to 2010-Q1
+    EuroZone_URL = 'https://ec.europa.eu/eurostat/api/dissemination/sdmx/3.0/data/dataflow/ESTAT/namq_10_gdp/1.0/*.*.*.*.*?c[freq]=Q&c[unit]=CP_MEUR,PD20_EUR&c[s_adj]=SCA&c[na_item]=B1G&c[geo]=BE,BG,DE,EE,EL,ES,FR,HR,IT,CY,LV,LT,LU,MT,NL,AT,PT,SI,SK,FI&c[TIME_PERIOD]=ge:2010-Q1&compress=false&format=csvdata&formatVersion=2.0&lang=en&labels=name'
     EuroZone = pd.read_csv(EuroZone_URL)
     EuroZone = EuroZone[['Unit of measure', 'Geopolitical entity (reporting)', 'TIME_PERIOD', 'OBS_VALUE']].rename(columns={
         'Geopolitical entity (reporting)': "Country",
@@ -140,7 +160,8 @@ def generate(current_quarter):
 
     EuroZone_GVA = pd.concat([Ireland_GVA, merged]).groupby("Quarter")["Value"].sum().reset_index().rename(columns={"Value": "GVA"})
 
-    Hours_URL = 'https://ec.europa.eu/eurostat/api/dissemination/sdmx/3.0/data/dataflow/ESTAT/namq_10_a10_e/1.0/*.*.*.*.*.*?c[freq]=Q&c[unit]=THS_HW&c[nace_r2]=TOTAL&c[s_adj]=SCA&c[na_item]=EMP_DC&c[geo]=BE,DE,EE,IE,EL,ES,FR,HR,IT,CY,LV,LT,LU,MT,NL,AT,PT,SI,SK,FI&c[TIME_PERIOD]=2025-Q4,2025-Q3,2025-Q2,2025-Q1,2024-Q4,2024-Q3,2024-Q2,2024-Q1,2023-Q4,2023-Q3,2023-Q2,2023-Q1&compress=false&format=csvdata&formatVersion=2.0&lang=en&labels=name'
+    # Extended TIME_PERIOD back to 2010-Q1
+    Hours_URL = 'https://ec.europa.eu/eurostat/api/dissemination/sdmx/3.0/data/dataflow/ESTAT/namq_10_a10_e/1.0/*.*.*.*.*.*?c[freq]=Q&c[unit]=THS_HW&c[nace_r2]=TOTAL&c[s_adj]=SCA&c[na_item]=EMP_DC&c[geo]=BE,BG,DE,EE,IE,EL,ES,FR,HR,IT,CY,LV,LT,LU,MT,NL,AT,PT,SI,SK,FI&c[TIME_PERIOD]=ge:2010-Q1&compress=false&format=csvdata&formatVersion=2.0&lang=en&labels=name'
     EuroZone_Hours_raw = pd.read_csv(Hours_URL)[['Geopolitical entity (reporting)', 'TIME_PERIOD', 'OBS_VALUE']].rename(columns={
         'Geopolitical entity (reporting)': "Country",
         'TIME_PERIOD': 'Quarter',
@@ -150,17 +171,17 @@ def generate(current_quarter):
 
     print("Before:")
     print(EuroZone_Hours_raw.groupby("Quarter")["Country"].nunique())
-    # Add Belgium if it's missing
-    # belgium_q3 = EuroZone_Hours[
-    #     (EuroZone_Hours["Country"] == "Belgium") &
-    #     (EuroZone_Hours["Quarter"] == "2025Q3")
-    # ]["Hours"].values[0]
-    # new_row = pd.DataFrame({
-    #     "Country": ["Belgium"],
-    #     "Quarter": [pd.Period("2025Q4", freq="Q")],
-    #     "Hours": [belgium_q3]
-    # })
-    # EuroZone_Hours = pd.concat([EuroZone_Hours, new_row])
+    # Add Belgium if it's missing !! - Check if the before and after 
+    belgium_q4 = EuroZone_Hours_raw[
+        (EuroZone_Hours_raw["Country"] == "Belgium") &
+        (EuroZone_Hours_raw["Quarter"] == "2025Q4")
+    ]["Hours"].values[0]
+    new_row = pd.DataFrame({
+        "Country": ["Belgium"],
+        "Quarter": [pd.Period("2026Q1", freq="Q")],
+        "Hours": [belgium_q4]
+    })
+    EuroZone_Hours_raw = pd.concat([EuroZone_Hours_raw, new_row])
 
     print("After:")
     print(EuroZone_Hours_raw.groupby("Quarter")["Country"].nunique())
@@ -174,7 +195,8 @@ def generate(current_quarter):
     EuroZone_Productivity["YoY"] = EuroZone_Productivity["productivity"].pct_change(4) * 100
     EuroZone_Productivity = EuroZone_Productivity.round(2)
 
-    EuroZone_URL_IE = 'https://ec.europa.eu/eurostat/api/dissemination/sdmx/3.0/data/dataflow/ESTAT/namq_10_gdp/1.0/*.*.*.*.*?c[freq]=Q&c[unit]=CP_MEUR,PD20_EUR&c[s_adj]=SCA&c[na_item]=B1G&c[geo]=BE,DE,EE,IE,EL,ES,FR,HR,IT,CY,LV,LT,LU,MT,NL,AT,PT,SI,SK,FI&c[TIME_PERIOD]=2025-Q4,2025-Q3,2025-Q2,2025-Q1,2024-Q4,2024-Q3,2024-Q2,2024-Q1,2023-Q4,2023-Q3,2023-Q2,2023-Q1&compress=false&format=csvdata&formatVersion=2.0&lang=en&labels=name'
+    # Extended TIME_PERIOD back to 2010-Q1
+    EuroZone_URL_IE = 'https://ec.europa.eu/eurostat/api/dissemination/sdmx/3.0/data/dataflow/ESTAT/namq_10_gdp/1.0/*.*.*.*.*?c[freq]=Q&c[unit]=CP_MEUR,PD20_EUR&c[s_adj]=SCA&c[na_item]=B1G&c[geo]=BE,BG,DE,EE,IE,EL,ES,FR,HR,IT,CY,LV,LT,LU,MT,NL,AT,PT,SI,SK,FI&c[TIME_PERIOD]=ge:2010-Q1&compress=false&format=csvdata&formatVersion=2.0&lang=en&labels=name'
     EuroZone_IE = pd.read_csv(EuroZone_URL_IE)[['Unit of measure', 'Geopolitical entity (reporting)', 'TIME_PERIOD', 'OBS_VALUE']].rename(columns={
         'Geopolitical entity (reporting)': "Country",
         'TIME_PERIOD': 'Quarter',
@@ -206,12 +228,15 @@ def generate(current_quarter):
     country_productivity = per_country(merged, merged_IE, Ireland_GVA, EuroZone_Hours_raw, EuroZone_Productivity, EuroZone_Productivity_IE)
 
     with pd.ExcelWriter("scripts/EU_Figures/OPH_Figures.xlsx", engine="openpyxl") as writer:
-        EuroZone_Productivity.to_excel(writer, sheet_name="Adjusted Eurozone GVA per hour", index=False)
-        EuroZone_Productivity_IE.to_excel(writer, sheet_name="Unadjusted Eurozone GVA per hour", index=False)
-        country_productivity.to_excel(writer, sheet_name="Country GVA per hour", index=False)
+        EuroZone_Productivity.to_excel(writer, sheet_name="Adjusted Eurozone GVApH", index=False)
+        EuroZone_Productivity_IE.to_excel(writer, sheet_name="Unadjusted Eurozone GVApH", index=False)
+        country_productivity.to_excel(writer, sheet_name="Country GVApH", index=False)
 
 
-    # key_countries = [
-    # 'Eurozone_Adjusted', 'Germany', 'France', 'Italy', 'Spain', 'Netherlands',
-    # ]
-    # plot_productivity(country_productivity, key_countries)
+    key_countries = [
+            'Germany', 'France', 'Italy', 'Spain', 'Netherlands',
+        ]
+    path = 'scripts/EU_Figures'
+    fig = plot_productivity(country_productivity, EuroZone_Productivity, EuroZone_Productivity_IE, key_countries)
+    fig.write_image(f"{path}/images/2026-Q1-Figure-1.png", width=1400, height=800, scale=2)
+    fig.write_html(f"{path}/html/2026-Q1-Figure-1.html")

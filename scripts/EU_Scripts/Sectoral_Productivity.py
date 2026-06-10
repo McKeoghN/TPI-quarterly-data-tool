@@ -101,7 +101,8 @@ def plot_latest_industry_growth_bar(
         margin=dict(l=180, r=40, t=80, b=40)
     )
 
-
+    print(df[['Industry', 'Quarter', value_col, 'Growth']].sort_values('Quarter').tail(20))
+    print("Latest quarter used:", latest)
     return fig
 
 def plot_eurozone_industry_growth( # Nvm this looks bad
@@ -216,7 +217,7 @@ def generate(current_quarter):
         })
 
     GVA_Chained['Country'] = GVA_Chained['Country'].replace({
-        'Euro area (EA11-1999, EA12-2001, EA13-2007, EA15-2008, EA16-2009, EA17-2011, EA18-2014, EA19-2015, EA20-2023, EA21-2026)': 'Euro Zone',
+        'Euro area – 21 countries (from 2026)': 'Euro Zone',
         'European Union - 27 countries (from 2020)': 'European Union'                                           
     })
 
@@ -232,7 +233,7 @@ def generate(current_quarter):
         })
 
     Hours_Jobs['Country'] = Hours_Jobs['Country'].replace({
-        'Euro area (EA11-1999, EA12-2001, EA13-2007, EA15-2008, EA16-2009, EA17-2011, EA18-2014, EA19-2015, EA20-2023, EA21-2026)': 'Euro Zone',
+        'Euro area – 21 countries (from 2026)': 'Euro Zone',
         'European Union - 27 countries (from 2020)': 'European Union'                                           
     })
 
