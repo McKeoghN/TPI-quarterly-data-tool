@@ -5,10 +5,10 @@ import scripts.EU_Scripts.Sectoral_Productivity as Sectoral_Productivity
 import scripts.EU_Scripts.EU_Line as EU_Line
 
 current_quarter = "2026Q1"
-#Euro_Blog_Processing.generate(current_quarter)
+Euro_Blog_Processing.generate(current_quarter)
 Ireland_Adj.generate(current_quarter)
-#EU_Line.generate()
-#Sectoral_Productivity.generate(current_quarter)
+EU_Line.generate()
+Sectoral_Productivity.generate(current_quarter)
 
 out_path = 'scripts/EU_Figures/'
 with pd.ExcelWriter(f"{out_path}/{current_quarter}_EU_Figures.xlsx", engine="openpyxl") as writer:

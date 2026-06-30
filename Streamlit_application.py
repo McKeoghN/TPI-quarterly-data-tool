@@ -84,8 +84,16 @@ def data_format(data, QorY, time_period, data_option, country_options, visType =
             time_period[0] -= 0.25
         elif visType == "YoY":
             time_period[0] -= 1
+        print('before')
+        print(data)
+        print(time_period)
+        print(country_options)
+        print(data_option.data_option)
+        print(industry_selection)
         data = data.query(
         f"Quarter >= {time_period[0]} and Quarter <= {time_period[1]} and Country in {country_options} and Variable == '{data_option.data_option}' and Industry in {industry_selection}")
+        print('after')
+        print(data)
     elif QorY == "Yearly":
         if data_option.base_year != 2015:
             data = rebase_chain_linked_years(data, data_option.base_year)
@@ -108,6 +116,7 @@ def data_format(data, QorY, time_period, data_option, country_options, visType =
             qoq_data["YoY Growth (%)"] = qoq_data.groupby("Country")["Value"].pct_change().mul(100).round(2)
         data = qoq_data
     if not data_option.show_years:
+        data = data.copy()
         data["Quarter"] = data["Quarter"].apply(numeric_to_quarter)
     return data
 
@@ -775,7 +784,7 @@ def main_code():
         # Save session state variables and load figure
         with st.spinner("Loading visualisation"):
             st.session_state.fig = fig
-            figure.plotly_chart(st.session_state.fig, use_container_width=True,                 
+            figure.plotly_chart(st.session_state.fig, width='stretch',                 
                 config={
                     "toImageButtonOptions": {
                         "format": "png",

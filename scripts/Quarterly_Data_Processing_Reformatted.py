@@ -132,8 +132,8 @@ Flash_Estimate_OPW = pd.read_csv('../src/OPW Q1 Flash Estimate.csv', skiprows=7,
 US_data = pd.read_excel('../src/labor-productivity-major-sectors.xlsx', sheet_name='Quarterly', usecols='A,C,D, GW:LI', skiprows=2)
 
 # European data API call
-#url = 'https://ec.europa.eu/eurostat/api/dissemination/sdmx/3.0/data/dataflow/ESTAT/namq_10_lp_ulc/1.0?format=csvdata&compress=false&,POPTRT&c[GEO]=EU27_2020,EA,DK,DE,IE,ES,FR,IT,NL,PL,RO,FI,NO&c[UNIT]=I20&c[S_ADJ]=SCA&c[TIME_PERIOD]=ge:1997+le:2030'
-url = 'https://ec.europa.eu/eurostat/api/dissemination/sdmx/3.0/data/dataflow/ESTAT/namq_10_lp_ulc/1.0?format=csvdata&compress=false&,POPTRT&c[GEO]=EU27_2020&c[UNIT]=I20&c[S_ADJ]=SCA&c[TIME_PERIOD]=ge:1997+le:2030'
+url = 'https://ec.europa.eu/eurostat/api/dissemination/sdmx/3.0/data/dataflow/ESTAT/namq_10_lp_ulc/1.0?format=csvdata&compress=false&,POPTRT&c[GEO]=EU27_2020,EA,DK,DE,IE,ES,FR,IT,NL,PL,RO,FI,NO&c[UNIT]=I20&c[S_ADJ]=SCA&c[TIME_PERIOD]=ge:1997+le:2030'
+#url = 'https://ec.europa.eu/eurostat/api/dissemination/sdmx/3.0/data/dataflow/ESTAT/namq_10_lp_ulc/1.0?format=csvdata&compress=false&,POPTRT&c[GEO]=EU27_2020&c[UNIT]=I20&c[S_ADJ]=SCA&c[TIME_PERIOD]=ge:1997+le:2030'
 EU_OPH_OPW = pd.read_csv(url)
 EU_OPH_OPW = EU_OPH_OPW.rename(columns={"TIME_PERIOD": "Quarter", "na_item": "Variable", "geo": "Country", "OBS_VALUE": "Value"})
 EU_OPH_OPW["Quarter"] = EU_OPH_OPW["Quarter"].str.replace("-", " ", regex=False)
